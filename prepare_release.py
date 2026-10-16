@@ -78,12 +78,22 @@ def build(base_url: str, output: Path, source: Path = ROOT) -> dict:
             raise ValueError('experiment accidentally contains a private token')
     (output / 'experiments').mkdir(parents=True, exist_ok=True)
     (output / 'experiments' / 'kepler-227.html').write_text(exhibit, encoding='utf-8')
+    second = source / 'experiments' / 'period-search.html'
+    second_html = second.read_text(encoding='utf-8')
+    for token in ('FIELD EXPERIMENT 002', 'f7185dd055fc7993469bb788816be6f592751a38',
+                  '9.4874', '厳格な盲検ではありません', '新しい惑星を発見した'):
+        if token not in second_html:
+            raise ValueError('second public experiment provenance or qualification missing')
+    for token in ('sk-proj', 'api_key', 'password', '@gmail.com', 'neconeco0306/'):
+        if token in second_html.lower():
+            raise ValueError('second experiment contains a private token')
+    (output / 'experiments' / 'period-search.html').write_text(second_html, encoding='utf-8')
     data = {
         'schema': 'polymath-public-site-release-v1',
         'canonical_url': base,
         'release_type': 'public-static-review-only',
         'published': False,
-        'files': {p: hashlib.sha256((output / p).read_bytes()).hexdigest() for p in ('index.html', 'social-card.png', 'experiments/kepler-227.html')},
+        'files': {p: hashlib.sha256((output / p).read_bytes()).hexdigest() for p in ('index.html', 'social-card.png', 'experiments/kepler-227.html', 'experiments/period-search.html')},
         'claims': 'synthetic demos and local software testing only; no independent scientific verification',
     }
     (output / 'release-manifest.json').write_text(json.dumps(data, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')

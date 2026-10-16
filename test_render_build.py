@@ -12,6 +12,7 @@ class RenderBuildTests(unittest.TestCase):
                 (t/fn).write_bytes((ROOT/fn).read_bytes())
             (t/'experiments').mkdir(exist_ok=True)
             (t/'experiments/kepler-227.html').write_bytes((ROOT/'experiments/kepler-227.html').read_bytes())
+            (t/'experiments/period-search.html').write_bytes((ROOT/'experiments/period-search.html').read_bytes())
             env=dict(os.environ)
             env.pop('RENDER_EXTERNAL_URL',None)
             if url is not None:

@@ -35,6 +35,7 @@ class ReleaseTests(unittest.TestCase):
             (src/'index.html').write_bytes((ROOT/'index.html').read_bytes())
             (src/'experiments').mkdir()
             (src/'experiments/kepler-227.html').write_bytes((ROOT/'experiments/kepler-227.html').read_bytes())
+            (src/'experiments/period-search.html').write_bytes((ROOT/'experiments/period-search.html').read_bytes())
             (src/'social-card.png.b64').write_text(base64.b64encode((ROOT/'social-card.png').read_bytes()).decode())
             out=Path(t)/'dist';build('https://research.polymath.invalid-site.net/',out,src)
             self.assertEqual((out/'social-card.png').read_bytes(),(ROOT/'social-card.png').read_bytes())
@@ -44,6 +45,7 @@ class ReleaseTests(unittest.TestCase):
             (src/'index.html').write_text((ROOT/'index.html').read_text()+'github.com/private',encoding='utf-8')
             (src/'experiments').mkdir()
             (src/'experiments/kepler-227.html').write_bytes((ROOT/'experiments/kepler-227.html').read_bytes())
+            (src/'experiments/period-search.html').write_bytes((ROOT/'experiments/period-search.html').read_bytes())
             (src/'social-card.png').write_bytes((ROOT/'social-card.png').read_bytes())
             with self.assertRaisesRegex(ValueError,'excluded token'):
                 build('https://research.polymath.invalid-site.net/',Path(t)/'dist',src)

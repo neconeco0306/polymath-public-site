@@ -23,3 +23,19 @@ class ExperimentTests(unittest.TestCase):
   for url in ('https://science.nasa.gov/exoplanet-catalog/kepler-227-b/','https://exoplanetarchive.ipac.caltech.edu/overview/Kepler-227'):
    self.assertIn(url,s)
 if __name__=="__main__":unittest.main()
+
+class PeriodExperimentTests(unittest.TestCase):
+ def test_new_period_experiment_evidence(self):
+  s=(ROOT/'experiments/period-search.html').read_text()
+  for term in ('FIELD EXPERIMENT 002','64,814','9.4874','411 ppm','305 ppm','2 / 120', '18.973日','厳格な盲検ではありません','新しい惑星を発見した','f7185dd055fc7993469bb788816be6f592751a38'):
+   self.assertIn(term,s)
+ def test_double_series_are_120(self):
+  s=(ROOT/'experiments/period-search.html').read_text()
+  for key in ('train','holdout'):
+   m=re.search(key+r':\[([0-9,\-]+)\]',s)
+   self.assertIsNotNone(m,key)
+   vals=list(map(int,m.group(1).split(',')))
+   self.assertEqual(len(vals),120)
+  self.assertEqual(list(map(int,re.search(r'train:\[([0-9,\-]+)\]',s).group(1).split(',')))[13:15],[-485,-339])
+ def test_site_has_entry_point(self):
+  self.assertIn('experiments/period-search.html',(ROOT/'index.html').read_text())
