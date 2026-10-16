@@ -7,6 +7,9 @@ This repository is **public-only**. The private POLYMATH LAB1/LAB2 source reposi
 - Canonical homepage: https://polymath-research-jp.onrender.com/
 - Field 001: `experiments/kepler-227.html` (known orbital periods, illustrative reprocessing)
 - Field 002: `experiments/period-search.html` (post-hoc exploratory period search, NOT a blinded discovery)
+- Research directory: `index.html#research-index` (15 qualified topic summaries; development status is not scientific validation)
+- Public source link: `https://github.com/neconeco0306/polymath-public-site` (this repository only, **not** private LAB1/LAB2 code)
+- Public work link: `https://neconeco0306.github.io/fracture-visual-evidence/` (an engineering artifact, not an independently verified scientific result)
 - Render: static site; branch `main`, `sh render-build.sh`, publish directory `dist`, autoDeploy disabled.
 - Files served: `index.html`, `social-card.png`, `release-manifest.json`, `experiments/kepler-227.html`, `experiments/period-search.html` only.
 - `research/` contains optional offline reproduction code and qualified observations; **never serve source or internal evidence** through Render.
