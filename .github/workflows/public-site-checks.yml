@@ -1,0 +1,26 @@
+name: Public site checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Site and offline research tests
+        run: |
+          python3 -m unittest discover -s research -p 'test_*.py' -v
+          python3 -m unittest discover -p 'test_*.py' -v
+      - name: Verify exact public deploy allowlist
+        env:
+          RENDER_EXTERNAL_URL: https://polymath-research-jp.onrender.com
+        run: sh render-build.sh
