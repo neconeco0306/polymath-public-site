@@ -23,7 +23,8 @@ class ReleaseTests(unittest.TestCase):
             out = Path(t) / 'dist'
             data = build('https://research.polymath.invalid-site.net/', out)
             html = (out/'index.html').read_text()
-            self.assertIn('content="https://research.polymath.invalid-site.net/social-card.png"',html)
+            card_hash = hashlib.sha256((out/'social-card.png').read_bytes()).hexdigest()[:16]
+            self.assertIn(f'content="https://research.polymath.invalid-site.net/social-card.png?v={card_hash}"',html)
             self.assertIn('rel="canonical"',html)
             self.assertEqual(data['canonical_url'],'https://research.polymath.invalid-site.net/')
             self.assertFalse(data['published'])
