@@ -1,39 +1,84 @@
-name: Public live URL audit
+name: Public live URL audit (pinned deployed revision)
+# Production is manually deployed; a source push does not imply that the live site changed.
+# Run this after Render confirms a live deployment; copy its full commit SHA as the input.
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - .github/workflows/public-live-audit.yml
-      - scripts/live_audit.py
-      - scripts/live_browser_audit.py
+    inputs:
+      deployed_commit_sha:
+        description: '40-character Git commit SHA of Render live deployment'
+        required: true
+        type: string
+
 permissions:
   contents: read
+
+concurrency:
+  group: public-live-audit
+  cancel-in-progress: false
+
 jobs:
   audit:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - name: Validate declared deployed commit SHA
+        env:
+          DEPLOYED_SHA: ${{ inputs.deployed_commit_sha }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          value = os.environ["DEPLOYED_SHA"]
+          if re.fullmatch(r"[0-9a-f]{40}", value) is None:
+              raise SystemExit("deployed_commit_sha must be exactly 40 lowercase hex characters")
+          print("Declared Render live commit:", value)
+          PY
+      # Audit scripts come from the branch selected when this workflow is dispatched.
+      - name: Checkout audit tooling
+        uses: actions/checkout@v4
+        with:
+          path: audit-tooling
+          persist-credentials: false
+      # Release content comes from the exact commit reported live by Render.
+      - name: Checkout the deployed source revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.deployed_commit_sha }}
+          path: deployed-source
+          persist-credentials: false
+      - name: Verify the checked-out release commit
+        env:
+          DEPLOYED_SHA: ${{ inputs.deployed_commit_sha }}
+        run: |
+          actual="$(git -C deployed-source rev-parse HEAD)"
+          if [ "$actual" != "$DEPLOYED_SHA" ]; then
+            echo "::error::Release checkout is not the declared Render deployment"
+            exit 1
+          fi
+          printf 'Auditing release source %s with audit tooling %s\n' "$actual" "$(git -C audit-tooling rev-parse HEAD)"
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Rebuild exact published allowlist
+      - name: Rebuild exact deployed public allowlist
+        working-directory: deployed-source
         env:
           RENDER_EXTERNAL_URL: https://polymath-research-jp.onrender.com
         run: sh render-build.sh
       - name: Install image decoder for CDN consistency audit
         run: python3 -m pip install --disable-pip-version-check Pillow==11.3.0
-      - name: Check five public assets and excluded routes over HTTPS
-        run: python3 scripts/live_audit.py
+      - name: Check five published assets and excluded paths over HTTPS
+        working-directory: deployed-source
+        run: python3 ../audit-tooling/scripts/live_audit.py
       - name: Install browser test driver
         run: python3 -m pip install --disable-pip-version-check selenium==4.36.0
       - name: Chrome mobile and desktop interaction checks
-        run: python3 scripts/live_browser_audit.py
+        working-directory: deployed-source
+        run: python3 ../audit-tooling/scripts/live_browser_audit.py
       - name: Save public-only verification screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: polymath-live-public-browser-qa
-          path: browser-audit-screenshots/
+          path: deployed-source/browser-audit-screenshots/
           if-no-files-found: ignore
           retention-days: 7
