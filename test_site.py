@@ -36,7 +36,7 @@ class SiteTests(unittest.TestCase):
  def test_research_directory_and_public_links(self):
   self.assertIn('id="research-index"',self.html)
   self.assertIn('2026.10.17',self.html)
-  for public in ['HPA-001','PAA-001','MAINT-001','ZCAI-001','RG-LOOP-001','EXPLOSION','AASI-001','FRACTURE','SOLIDCRAFT']:
+  for public in ['HPA-001','PAA-001','MAINT-001','AEGL-001','EQS-001','ZCAI-001','RG-LOOP-001','EXPLOSION','AASI-001','FRACTURE','SOLIDCRAFT']:
    self.assertIn(public,self.html)
   self.assertIn('https://github.com/neconeco0306/polymath-public-site',self.html)
   self.assertIn('実AI比較0件',self.html)
