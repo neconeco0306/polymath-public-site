@@ -1,0 +1,54 @@
+{
+  "schema": "polymath-field-002-exploratory-v1",
+  "method": "2-day median detrend, |ppm|<4000, midpoint split, 120 phase bins, max 2-bin mean drop",
+  "source": {
+    "url": "https://github.com/buildwithanuragpandey/stelsion-dataset/blob/main/lightcurves/confirmed/10797460.csv",
+    "git_blob_sha1": "f7185dd055fc7993469bb788816be6f592751a38",
+    "n_rows": 64814,
+    "retained": 64713,
+    "train": 32533,
+    "later": 32180,
+    "catalog_period_days_approx": 9.49
+  },
+  "exploration": {
+    "initial_top_coarse_days": 18.98,
+    "subsequent_refined_double_period_days": 18.973,
+    "posthoc_half_period_days": 9.4874,
+    "train_score_ppm": 411.3573979433766,
+    "later_score_ppm": 304.9251700989609,
+    "later_same_phase_rank_of_120": 2
+  },
+  "controls": [
+    {
+      "period_days": 10.2,
+      "train_score_ppm": 102.14036178767034,
+      "later_score_ppm": 2.1397956717943925
+    },
+    {
+      "period_days": 18.973,
+      "train_score_ppm": 226.85055301027532,
+      "later_score_ppm": 135.29488322418877
+    }
+  ],
+  "challenge_sample": {
+    "repo_folder_label": "false_positive",
+    "label_independently_verified": false,
+    "source_url": "https://github.com/buildwithanuragpandey/stelsion-dataset/blob/main/lightcurves/false_positive/10419211.csv",
+    "git_blob_sha1": "5d8e5679f873faf79e21643f71f21d3cce2ffd94",
+    "n_rows": 51731,
+    "retained": 51100,
+    "train": 28007,
+    "later": 23093,
+    "period_days": 11.52,
+    "train_score_ppm": 720.7644981357116,
+    "later_score_ppm": 265.84401944692087
+  },
+  "qualification": {
+    "posthoc": true,
+    "strictly_blind": false,
+    "independent_review": false,
+    "NASA_source_original_verified": false,
+    "exoplanet_new_discovery": false,
+    "authoritative_false_positive_disposition_verified": false
+  }
+}

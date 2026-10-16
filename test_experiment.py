@@ -37,5 +37,12 @@ class PeriodExperimentTests(unittest.TestCase):
    vals=list(map(int,m.group(1).split(',')))
    self.assertEqual(len(vals),120)
   self.assertEqual(list(map(int,re.search(r'train:\[([0-9,\-]+)\]',s).group(1).split(',')))[13:15],[-485,-339])
+
+ def test_mobile_chart_is_scrollable_and_dip_visible(self):
+  s=(ROOT/'experiments/period-search.html').read_text()
+  self.assertIn('class="chartscroll"',s)
+  self.assertIn('.chartscroll svg{width:720px;max-width:none}',s)
+  self.assertIn('function y(v){return 218-v*0.22}',s)
+  self.assertTrue(all(40 <= 218-y*.22 <= 360 for y in (-526,-485,-339,0,125)))
  def test_site_has_entry_point(self):
   self.assertIn('experiments/period-search.html',(ROOT/'index.html').read_text())
