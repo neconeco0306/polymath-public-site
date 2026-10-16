@@ -21,6 +21,8 @@ jobs:
         env:
           RENDER_EXTERNAL_URL: https://polymath-research-jp.onrender.com
         run: sh render-build.sh
+      - name: Install image decoder for CDN consistency audit
+        run: python3 -m pip install --disable-pip-version-check Pillow==11.3.0
       - name: Check five public assets and excluded routes over HTTPS
         run: python3 scripts/live_audit.py
       - name: Install browser test driver
