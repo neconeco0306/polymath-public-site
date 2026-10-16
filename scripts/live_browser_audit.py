@@ -61,7 +61,7 @@ def run():
                   links: [...document.querySelectorAll('a')].filter(a=>a.href.includes('github.com')).length
                 };
             """)
-            assert_true(metrics["items"] == 15, f"missing research entries at {width}: {metrics}")
+            assert_true(metrics["items"] == 17, f"missing research entries at {width}: {metrics}")
             assert_true(metrics["links"] >= 1, f"missing GitHub link at {width}")
             assert_true(metrics["document"] <= metrics["inner"] + 3, f"horizontal overflow at {width}: {metrics}")
             assert_true(metrics["body"] <= metrics["inner"] + 3, f"body overflow at {width}: {metrics}")
@@ -79,7 +79,7 @@ def run():
             path = OUT / f"homepage-{width}.png"
             browser.save_screenshot(str(path))
             checks.append({"page": "/", "viewport": width, "research_items": metrics["items"], "overflow": False, "buttons": "pass"})
-            print(f"PASS live homepage {width}px / 15 research items / no horizontal overflow / buttons",flush=True)
+            print(f"PASS live homepage {width}px / 17 research items / no horizontal overflow / buttons",flush=True)
 
         for name, first, second in (
             ("kepler-227", "real", "wrong"),
