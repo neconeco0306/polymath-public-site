@@ -65,12 +65,25 @@ def build(base_url: str, output: Path, source: Path = ROOT) -> dict:
     output.mkdir(parents=True, exist_ok=True)
     (output / 'index.html').write_text(website, encoding='utf-8')
     (output / 'social-card.png').write_bytes(card)
+    # Only the separately reviewed, source-attributed experiment is publishable.
+    experiment = source / 'experiments' / 'kepler-227.html'
+    if not experiment.is_file():
+        raise ValueError('public experiment is missing; failing closed')
+    exhibit = experiment.read_text(encoding='utf-8')
+    for token in ('<title>見えない惑星の影を読む', 'NASA Exoplanet Archive', '64,814', 'f7185dd055fc7993469bb788816be6f592751a38'):
+        if token not in exhibit:
+            raise ValueError('experiment failed provenance/identity check')
+    for token in ('sk-proj', 'api_key', 'password', '@gmail.com', 'neconeco0306/'):
+        if token in exhibit.lower():
+            raise ValueError('experiment accidentally contains a private token')
+    (output / 'experiments').mkdir(parents=True, exist_ok=True)
+    (output / 'experiments' / 'kepler-227.html').write_text(exhibit, encoding='utf-8')
     data = {
         'schema': 'polymath-public-site-release-v1',
         'canonical_url': base,
         'release_type': 'public-static-review-only',
         'published': False,
-        'files': {p: hashlib.sha256((output / p).read_bytes()).hexdigest() for p in ('index.html', 'social-card.png')},
+        'files': {p: hashlib.sha256((output / p).read_bytes()).hexdigest() for p in ('index.html', 'social-card.png', 'experiments/kepler-227.html')},
         'claims': 'synthetic demos and local software testing only; no independent scientific verification',
     }
     (output / 'release-manifest.json').write_text(json.dumps(data, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')

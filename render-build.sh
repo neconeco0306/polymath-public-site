@@ -23,7 +23,8 @@ from pathlib import Path
 import json
 p=Path('dist')
 manifest=json.loads((p/'release-manifest.json').read_text(encoding='utf-8'))
-assert sorted(p.name for p in p.iterdir()) == ['index.html','release-manifest.json','social-card.png']
+assert sorted(p.name for p in p.iterdir()) == ['experiments','index.html','release-manifest.json','social-card.png']
 assert manifest['canonical_url'].startswith('https://')
+assert sorted(x.name for x in (p/'experiments').iterdir())==['kepler-227.html']
 print('PUBLIC ASSETS ONLY:', ', '.join(sorted(x.name for x in p.iterdir())))
 PY

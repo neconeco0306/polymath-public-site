@@ -10,6 +10,8 @@ class RenderBuildTests(unittest.TestCase):
             t = Path(td)
             for fn in ('index.html','social-card.png.b64','prepare_release.py','test_site.py','test_release.py','render-build.sh'):
                 (t/fn).write_bytes((ROOT/fn).read_bytes())
+            (t/'experiments').mkdir(exist_ok=True)
+            (t/'experiments/kepler-227.html').write_bytes((ROOT/'experiments/kepler-227.html').read_bytes())
             env=dict(os.environ)
             env.pop('RENDER_EXTERNAL_URL',None)
             if url is not None:
