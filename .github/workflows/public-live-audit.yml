@@ -1,0 +1,37 @@
+name: Public live URL audit
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/public-live-audit.yml
+      - scripts/live_audit.py
+      - scripts/live_browser_audit.py
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Rebuild exact published allowlist
+        env:
+          RENDER_EXTERNAL_URL: https://polymath-research-jp.onrender.com
+        run: sh render-build.sh
+      - name: Check five public assets and excluded routes over HTTPS
+        run: python3 scripts/live_audit.py
+      - name: Install browser test driver
+        run: python3 -m pip install --disable-pip-version-check selenium==4.36.0
+      - name: Chrome mobile and desktop interaction checks
+        run: python3 scripts/live_browser_audit.py
+      - name: Save public-only verification screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: polymath-live-public-browser-qa
+          path: browser-audit-screenshots/
+          if-no-files-found: ignore
+          retention-days: 7
