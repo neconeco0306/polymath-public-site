@@ -22,13 +22,25 @@ class SiteTests(unittest.TestCase):
   for href in self.doc.hrefs:
    if href in ('experiments/kepler-227.html','experiments/period-search.html'):
     self.assertTrue((ROOT/href).exists())
+   elif href.startswith('https://'):
+    self.assertIn(href,{
+     'https://github.com/neconeco0306/polymath-public-site',
+     'https://neconeco0306.github.io/fracture-visual-evidence/'},href)
    else:
     self.assertTrue(href.startswith('#'),href)
     self.assertIn(href[1:],self.doc.ids,href)
  def test_unique_ids(self):self.assertEqual(len(self.doc.ids),len(set(self.doc.ids)))
  def test_no_secret_or_private_link(self):
-  for token in ['neconeco0306','notion.com','github.com/','api_key','sk-proj','password','@gmail.com','https://docs.google.com/']:
+  for token in ['polymath-lab1','polymath-lab2','notion.com','api_key','sk-proj','password','@gmail.com','https://docs.google.com/']:
    self.assertNotIn(token,self.html.lower(),token)
+ def test_research_directory_and_public_links(self):
+  self.assertIn('id="research-index"',self.html)
+  self.assertIn('2026.10.17',self.html)
+  for public in ['HPA-001','PAA-001','MAINT-001','ZCAI-001','RG-LOOP-001','EXPLOSION','AASI-001','FRACTURE','SOLIDCRAFT']:
+   self.assertIn(public,self.html)
+  self.assertIn('https://github.com/neconeco0306/polymath-public-site',self.html)
+  self.assertIn('実AI比較0件',self.html)
+  self.assertIn('非公開リポジトリ',self.html)
  def test_non_official_warning(self):self.assertIn('大学、研究機関、学会の公式発表ではありません',self.html)
  def test_static_snapshot(self):self.assertIn('2026年10月17日',self.html);self.assertIn('experiments/kepler-227.html',self.html);self.assertIn('experiments/period-search.html',self.html);self.assertIn('リアルタイム同期ではありません',self.html);self.assertIn('Graph固有の性能優位は示せませんでした',self.html)
  def test_scientific_claim_boundary(self):
