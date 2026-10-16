@@ -60,9 +60,18 @@ def main() -> None:
             digest = hashlib.sha256(data).hexdigest()
             if digest == local_digest:
                 break
+            pixel_equal = None
+            if path.endswith(".png"):
+                from io import BytesIO
+                from PIL import Image
+                with Image.open(BytesIO(data)) as live_image, Image.open(DIST / path) as local_image:
+                    pixel_equal = (
+                        live_image.size == local_image.size
+                        and live_image.convert("RGBA").tobytes() == local_image.convert("RGBA").tobytes()
+                    )
             mismatches.append({
                 "sha": digest, "bytes": len(data), "content_type": headers.get("Content-Type"),
-                "prefix_hex": data[:24].hex(),
+                "prefix_hex": data[:24].hex(), "pixel_equal": pixel_equal,
             })
         if mismatches:
             print(f"PROBE WARNING {path}: {mismatches}", flush=True)
