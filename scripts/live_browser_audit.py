@@ -43,7 +43,10 @@ def run():
     checks = []
     try:
         for width, height in ((320, 820), (390, 844), (768, 950), (1440, 900)):
-            browser.set_window_size(width, height)
+            browser.set_window_size(max(width, 500), height)
+            browser.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {
+                "width": width, "height": height, "deviceScaleFactor": 1, "mobile": width <= 768
+            })
             browser.get(BASE + "/?qa=1")
             WebDriverWait(browser, 20).until(
                 lambda d: d.find_element(By.ID, "research-index").is_displayed()
@@ -62,9 +65,16 @@ def run():
             assert_true(metrics["links"] >= 1, f"missing GitHub link at {width}")
             assert_true(metrics["document"] <= metrics["inner"] + 3, f"horizontal overflow at {width}: {metrics}")
             assert_true(metrics["body"] <= metrics["inner"] + 3, f"body overflow at {width}: {metrics}")
-            browser.find_element(By.ID, "root-btn").click()
+            root = browser.find_element(By.ID, "root-btn")
+            browser.execute_script("arguments[0].scrollIntoView({block:'center'})", root)
+            geometry = browser.execute_script("const r=arguments[0].getBoundingClientRect(); return {top:r.top,bottom:r.bottom,viewport:innerHeight,scroll:scrollY}", root)
+            print(f"DEBUG demo button {width}px {geometry}",flush=True)
+            assert_true(geometry["top"]>=0 and geometry["bottom"]<=geometry["viewport"]+2, f"button outside viewport: {geometry}")
+            root.click()
             assert_true(browser.find_element(By.ID, "declared-count").text == "1", "source demo click failed")
-            browser.find_element(By.ID, "naive-btn").click()
+            reset = browser.find_element(By.ID, "naive-btn")
+            browser.execute_script("arguments[0].scrollIntoView({block:'center'})", reset)
+            reset.click()
             assert_true(browser.find_element(By.ID, "declared-count").text == "13", "source reset click failed")
             path = OUT / f"homepage-{width}.png"
             browser.save_screenshot(str(path))
@@ -75,12 +85,19 @@ def run():
             ("kepler-227", "real", "wrong"),
             ("period-search", "both", "validation"),
         ):
-            browser.set_window_size(390, 844)
+            browser.set_window_size(500, 844)
+            browser.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {
+                "width": 390, "height": 844, "deviceScaleFactor": 1, "mobile": True
+            })
             browser.get(BASE + "/experiments/" + name + ".html?qa=1")
             WebDriverWait(browser, 20).until(lambda d: d.find_element(By.ID, second).is_displayed())
-            browser.find_element(By.ID, second).click()
+            button = browser.find_element(By.ID, second)
+            browser.execute_script("arguments[0].scrollIntoView({block:'center'})", button)
+            button.click()
             assert_true(browser.find_element(By.ID, second).get_attribute("aria-pressed") == "true", name + " toggle did not activate")
-            browser.find_element(By.ID, first).click()
+            button = browser.find_element(By.ID, first)
+            browser.execute_script("arguments[0].scrollIntoView({block:'center'})", button)
+            button.click()
             assert_true(browser.find_element(By.ID, first).get_attribute("aria-pressed") == "true", name + " toggle did not reset")
             errors = browser.execute_script("return {width:innerWidth,doc:document.documentElement.scrollWidth}")
             assert_true(errors["doc"] <= errors["width"]+3, name + " overflows phone screen")
