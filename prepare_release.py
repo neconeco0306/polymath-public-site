@@ -43,8 +43,13 @@ def build(base_url: str, output: Path, source: Path = ROOT) -> dict:
         raise ValueError('source site does not match reviewed template')
     if 'name="twitter:image"' in website or 'property="og:image"' in website:
         raise ValueError('source already contains deployed card URL; review before rebuilding')
-    for token in ('notion.com', 'github.com/', 'sk-proj', 'api_key', 'password', '@gmail.com'):
-        if token.lower() in website.lower():
+    # One explicitly reviewed public repository may be linked from a normal href.
+    # Mask only this exact href; every other github.com path remains excluded.
+    approved_github_href = 'href="https://github.com/neconeco0306/polymath-public-site"'
+    inspected_website = website.replace(approved_github_href, 'href="PUBLIC_REVIEWED_SOURCE_REPO"')
+    for token in ('notion.com', 'github.com/', 'polymath-lab1', 'polymath-lab2',
+                  'sk-proj', 'api_key', 'password', '@gmail.com'):
+        if token.lower() in inspected_website.lower():
             raise ValueError('site unexpectedly includes an internal/excluded token')
     card_path = source / 'social-card.png'
     if card_path.exists():
