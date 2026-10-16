@@ -59,7 +59,8 @@ def build(base_url: str, output: Path, source: Path = ROOT) -> dict:
         card = base64.b64decode(''.join(encoded.split()), validate=True)
     if not card.startswith(b'\x89PNG\r\n\x1a\n'):
         raise ValueError('invalid social card PNG')
-    card_url = base + 'social-card.png'
+    # Content-versioned OG URL prevents stale images in social share caches.
+    card_url = base + 'social-card.png?v=' + hashlib.sha256(card).hexdigest()[:16]
     tags = '\n'.join([
         '<link rel="canonical" href="' + html.escape(base, quote=True) + '">',
         '<meta property="og:url" content="' + html.escape(base, quote=True) + '">',
