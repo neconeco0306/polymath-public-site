@@ -31,3 +31,14 @@ Data conclusions are limited. The analysis is **not** a new exoplanet discovery,
 ## Update policy
 
 New research artifacts require source/provenance checks, scientific-claim boundaries, unit tests, responsive/browser checks and explicit review before deployment. This stable homepage is intentionally manually updated. Never publish private research code, contacts, account credentials or API keys.
+
+## Post-deploy public-site verification (proposed in Draft PR)
+
+Render's `autoDeploy` is **disabled**. A new GitHub commit is not proof that the public site uses it. The public-release URL audit should therefore run **only after an operator checks Render's latest deployment status = live**:
+
+1. On Render's `polymath-research-jp` Deploys view, copy the full 40-character commit SHA of the **live** release (not merely the newest source/main SHA).
+2. In GitHub Actions, open `Public live URL audit (pinned deployed revision)`, choose `Run workflow`, and enter `deployed_commit_sha`. Select a trusted audit-tooling branch (normally main after review/merge).
+3. The workflow checks the commit syntax, checks out the declared release revision separately from the latest audit scripts, and rebuilds the release's *exact* public allowlist. It then checks HTTP bytes and the existing mobile/desktop interactions. The audit reports failure if actual live bytes differ; it **does not auto-deploy** or edit DNS/accounts.
+4. If the SHA cannot be established from a completed deployment, **do not run this audit or claim a release is verified**. A copied SHA remains an operator assertion until checked against the actual public asset responses and other evidence.
+
+Static code/build tests remain independent of live-deployment timing and run on ordinary PRs and pushes. The same GitHub-hosted workflow does not independently authenticate the Render account's deployment identity: it verifies declared revision consistency against returned public bytes. CI minutes and runner availability are separate constraints.
