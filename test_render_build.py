@@ -29,7 +29,7 @@ class RenderBuildTests(unittest.TestCase):
         p,m,html,png=self.run_build('https://polymath-lab.onrender.com')
         self.assertEqual(p.returncode,0,p.stderr)
         self.assertEqual(m['canonical_url'],'https://polymath-lab.onrender.com/')
-        self.assertIn('content="https://polymath-lab.onrender.com/social-card.png"',html)
+        self.assertIn('content="https://polymath-lab.onrender.com/social-card.png?v=',html)
         self.assertIn('rel="canonical" href="https://polymath-lab.onrender.com/"',html)
         self.assertTrue(png)
         self.assertTrue('PUBLIC ASSETS ONLY:' in p.stdout)
