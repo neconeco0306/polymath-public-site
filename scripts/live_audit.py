@@ -17,9 +17,9 @@ PAGES = ("index.html", "experiments/kepler-227.html", "experiments/period-search
 PRIVATE = ("research/REPORT.md", "research/observations.json", "prepare_release.py", ".github/workflows/public-site-checks.yml")
 
 
-def fetch(path: str, attempts: int = 5) -> tuple[int, bytes, dict]:
+def fetch(path: str, attempts: int = 5, cache_variant: str = "1") -> tuple[int, bytes, dict]:
     assert path and ".." not in path and not path.startswith("/"), path
-    url = BASE + "/" + path + "?public-ci=1"
+    url = BASE + "/" + path + "?public-ci=" + cache_variant
     for i in range(attempts):
         req = urllib.request.Request(url, headers={
             "User-Agent": "POLYMATH-public-release-verifier/1.0",
@@ -52,11 +52,21 @@ def main() -> None:
     manifest = json.loads((DIST / "release-manifest.json").read_text())
     assert set(manifest["files"]) == expected - {"release-manifest.json"}
     for path in PAGES:
-        status, data, headers = fetch(path)
-        assert status == 200, (path, status)
-        digest = hashlib.sha256(data).hexdigest()
         local_digest = hashlib.sha256((DIST / path).read_bytes()).hexdigest()
-        assert digest == local_digest, (path, digest, local_digest)
+        mismatches = []
+        for probe in range(3):
+            status, data, headers = fetch(path, cache_variant=str(probe + 1))
+            assert status == 200, (path, status)
+            digest = hashlib.sha256(data).hexdigest()
+            if digest == local_digest:
+                break
+            mismatches.append({
+                "sha": digest, "bytes": len(data), "content_type": headers.get("Content-Type"),
+                "prefix_hex": data[:24].hex(),
+            })
+        if mismatches:
+            print(f"PROBE WARNING {path}: {mismatches}", flush=True)
+        assert digest == local_digest, (path, digest, local_digest, mismatches)
         if path in manifest["files"]:
             assert digest == manifest["files"][path], path
         if path.endswith(".html"):
