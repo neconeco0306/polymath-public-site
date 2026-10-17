@@ -13,6 +13,23 @@ class CheckHTML(HTMLParser):
   if tag=='a':self.hrefs.append(a.get('href',''))
   if tag=='meta':self.meta.append(a)
 
+class NotebookStructure(HTMLParser):
+ def __init__(self):
+  super().__init__();self.div_classes=[];self.entries=0;self.times=0;self.errors=[]
+ def handle_starttag(self,tag,attrs):
+  if tag=='div':
+   classes=set((dict(attrs).get('class') or '').split())
+   if 'log-entry' in classes and 'notebook' in self.div_classes:
+    self.entries+=1
+    if 'log-entry' in self.div_classes:self.errors.append('nested log-entry')
+    if self.div_classes[-2:]!=['notebook','']:self.errors.append('log-entry is not a direct notebook-row child')
+   self.div_classes.append('notebook' if 'notebook' in classes else 'log-entry' if 'log-entry' in classes else '')
+  elif tag=='time' and 'notebook' in self.div_classes:
+   self.times+=1
+   if 'log-entry' not in self.div_classes:self.errors.append('time outside log-entry')
+ def handle_endtag(self,tag):
+  if tag=='div' and self.div_classes:self.div_classes.pop()
+
 class SiteTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
@@ -52,5 +69,15 @@ class SiteTests(unittest.TestCase):
  def test_buttons_and_js(self):
   for key in ['naive-btn','root-btn','declared-count','count-bar','exp-explain']:
    self.assertIn(key,self.doc.ids)
+
+ def test_notebook_entries_are_siblings(self):
+  parsed=NotebookStructure();parsed.feed(self.html)
+  self.assertGreaterEqual(parsed.entries,3)
+  self.assertEqual(parsed.entries,parsed.times)
+  self.assertEqual(parsed.errors,[])
+ def test_notebook_guard_rejects_nested_entries(self):
+  bad='<div class="notebook"><div><div class="log-entry"><time>1</time><div class="log-entry"><time>2</time></div></div></div></div>'
+  parsed=NotebookStructure();parsed.feed(bad)
+  self.assertIn('nested log-entry',parsed.errors)
 
 if __name__=='__main__':unittest.main(verbosity=2)
