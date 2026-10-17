@@ -7,11 +7,13 @@ This repository is **public-only**. The private POLYMATH LAB1/LAB2 source reposi
 - Canonical homepage: https://polymath-research-jp.onrender.com/
 - Field 001: `experiments/kepler-227.html` (known orbital periods, illustrative reprocessing)
 - Field 002: `experiments/period-search.html` (post-hoc exploratory period search, NOT a blinded discovery)
-- Research directory: `index.html#research-index` (17 qualified topic summaries; development status is not scientific validation)
+- Simplified research findings (Japanese): `index.html`; complete six-result English overview: `en.html`
+- Previous Japanese 17-topic research directory: `archive.html` (preserved; not a new scientific finding)
+- The two existing interactive astronomy exhibits retain Japanese labels; English findings and cautions are fully translated on `en.html`
 - Public source link: `https://github.com/neconeco0306/polymath-public-site` (this repository only, **not** private LAB1/LAB2 code)
 - Public work link: `https://neconeco0306.github.io/fracture-visual-evidence/` (an engineering artifact, not an independently verified scientific result)
 - Render: static site; branch `main`, `sh render-build.sh`, publish directory `dist`, autoDeploy disabled.
-- Files served: `index.html`, `social-card.png`, `release-manifest.json`, `experiments/kepler-227.html`, `experiments/period-search.html` only.
+- Files served: `index.html`, `en.html`, `archive.html`, `social-card.png`, `release-manifest.json`, `experiments/kepler-227.html`, `experiments/period-search.html` only.
 - `research/` contains optional offline reproduction code and qualified observations; **never serve source or internal evidence** through Render.
 
 ## Reproduce
@@ -31,3 +33,9 @@ Data conclusions are limited. The analysis is **not** a new exoplanet discovery,
 ## Update policy
 
 New research artifacts require source/provenance checks, scientific-claim boundaries, unit tests, responsive/browser checks and explicit review before deployment. This stable homepage is intentionally manually updated. Never publish private research code, contacts, account credentials or API keys.
+
+## Research-finding publication boundaries (2026-10-18)
+
+The six numerical stories on the Japanese and English homepage are pre-existing exploratory observations, not an independently validated original discovery. These public-only descriptions intentionally exclude private research paths, artifacts, contributor accounts and unpublished data. The 81.79% initial/noise figure and 0.63% holdout figure come from **separate** Gaussian simulation runs (not paired real-world measurement). The Kepler period was chosen through a post-hoc harmonic check, not strict blind discovery. The simple-rule circuit result uses synthetic classical problems. The source-lineage matcher tied a simple baseline (7/8). The budget-allocation floor's task value is unknown.
+
+Translation parity is regression-tested for all six findings. The existing Japanese-only interactive experiment pages are retained unmodified; an English reader can understand their conclusions on the English homepage, though the interactive controls are not yet translated. Render autoDeploy remains off; merging a PR by itself is not a verified live deployment.
