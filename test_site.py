@@ -73,6 +73,12 @@ class SiteTests(unittest.TestCase):
             for token in ('polymath-lab1','polymath-lab2','notion.com','api_key','sk-proj','password','@gmail.com','https://docs.google.com/'):
                 self.assertNotIn(token,lower,(name,token))
             self.assertNotIn('<script',lower,(name,'unexpected runtime dependency'))
+    def test_existing_interactive_experiments_link_back_to_english(self):
+        for name in ('kepler-227.html','period-search.html'):
+            html=(ROOT/'experiments'/name).read_text(encoding='utf-8')
+            self.assertIn('href="../en.html#kepler"',html)
+            self.assertIn('Read this experiment in English',html)
+            self.assertIn('Interactive chart controls remain in Japanese.',html)
     def test_archive_preserved(self):
         old=(ROOT/'archive.html').read_text(encoding='utf-8')
         for token in ('id="research-index"','HPA-001','PAA-001','MAINT-001','ZCAI-001','FRACTURE','Graph固有の性能優位は示せませんでした'):
