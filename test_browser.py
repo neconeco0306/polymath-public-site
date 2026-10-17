@@ -75,7 +75,7 @@ class BrowserLayoutTests(unittest.TestCase):
                         self.assertTrue(screenshot.exists())
                         pic=screenshot.read_bytes()
                         self.assertGreater(len(pic),2500)
-                        self.assertEqual(pic[:8],b'\\x89PNG\\r\\n\\x1a\\n')
+                        self.assertEqual(pic[:8],b'\x89PNG\r\n\x1a\n')
                         image_width,image_height=struct.unpack('>II',pic[16:24])
                         self.assertGreaterEqual(image_width,390 if width==390 else 1200)
                         self.assertGreater(image_height,400)
