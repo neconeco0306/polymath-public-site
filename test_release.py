@@ -34,6 +34,8 @@ class ReleaseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as t:
             src=Path(t)/'src';src.mkdir()
             (src/'index.html').write_bytes((ROOT/'index.html').read_bytes())
+            for page in ('en.html', 'archive.html'):
+                (src/page).write_bytes((ROOT/page).read_bytes())
             (src/'experiments').mkdir()
             (src/'experiments/kepler-227.html').write_bytes((ROOT/'experiments/kepler-227.html').read_bytes())
             (src/'experiments/period-search.html').write_bytes((ROOT/'experiments/period-search.html').read_bytes())
@@ -44,6 +46,8 @@ class ReleaseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as t:
             src=Path(t)/'src';src.mkdir()
             (src/'index.html').write_text((ROOT/'index.html').read_text()+'github.com/private',encoding='utf-8')
+            for page in ('en.html', 'archive.html'):
+                (src/page).write_bytes((ROOT/page).read_bytes())
             (src/'experiments').mkdir()
             (src/'experiments/kepler-227.html').write_bytes((ROOT/'experiments/kepler-227.html').read_bytes())
             (src/'experiments/period-search.html').write_bytes((ROOT/'experiments/period-search.html').read_bytes())
