@@ -94,12 +94,32 @@ def build(base_url: str, output: Path, source: Path = ROOT) -> dict:
         if token in second_html.lower():
             raise ValueError('second experiment contains a private token')
     (output / 'experiments' / 'period-search.html').write_text(second_html, encoding='utf-8')
+    # The bilingual landing pages are separately reviewed public-only summaries.
+    # Keep legacy pages available rather than silently dropping older research context.
+    for name, expected_lang, marker_text in (
+        ('en.html', 'en', 'Six findings, explained simply.'),
+        ('archive.html', 'ja', 'id="research-index"'),
+    ):
+        file_path = source / name
+        if not file_path.is_file():
+            raise ValueError('missing reviewed public page: ' + name)
+        content = file_path.read_text(encoding='utf-8')
+        if 'lang="' + expected_lang + '"' not in content or marker_text not in content:
+            raise ValueError('public page identity check failed: ' + name)
+        if content.count('</html>') != 1 or content.count('</head>') != 1:
+            raise ValueError('invalid HTML document structure: ' + name)
+        inspected = content.replace(approved_github_href, 'href="PUBLIC_REVIEWED_SOURCE_REPO"')
+        for token in ('notion.com', 'github.com/', 'polymath-lab1',
+                      'polymath-lab2', 'sk-proj', 'api_key', 'password', '@gmail.com'):
+            if token.lower() in inspected.lower():
+                raise ValueError('public page contains excluded text: ' + name)
+        (output / name).write_text(content, encoding='utf-8')
     data = {
         'schema': 'polymath-public-site-release-v1',
         'canonical_url': base,
         'release_type': 'public-static-review-only',
         'published': False,
-        'files': {p: hashlib.sha256((output / p).read_bytes()).hexdigest() for p in ('index.html', 'social-card.png', 'experiments/kepler-227.html', 'experiments/period-search.html')},
+        'files': {p: hashlib.sha256((output / p).read_bytes()).hexdigest() for p in ('index.html', 'en.html', 'archive.html', 'social-card.png', 'experiments/kepler-227.html', 'experiments/period-search.html')},
         'claims': 'synthetic demos and local software testing only; no independent scientific verification',
     }
     (output / 'release-manifest.json').write_text(json.dumps(data, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
