@@ -113,6 +113,17 @@ def build(base_url: str, output: Path, source: Path = ROOT) -> dict:
                       'polymath-lab2', 'sk-proj', 'api_key', 'password', '@gmail.com'):
             if token.lower() in inspected.lower():
                 raise ValueError('public page contains excluded text: ' + name)
+        if name == 'archive.html':
+            # Prevent stale summaries being indexed as the current research record.
+            content = content.replace('content="index, follow"', 'content="noindex, follow"', 1)
+        if name == 'en.html':
+            english_tags = '\\n'.join([
+                '<link rel="canonical" href="' + html.escape(base + 'en.html', quote=True) + '">',
+                '<meta property="og:url" content="' + html.escape(base + 'en.html', quote=True) + '">',
+                '<meta property="og:image" content="' + html.escape(card_url, quote=True) + '">',
+                '<meta name="twitter:image" content="' + html.escape(card_url, quote=True) + '">',
+            ])
+            content = content.replace('</head>', english_tags + '\\n</head>')
         (output / name).write_text(content, encoding='utf-8')
     data = {
         'schema': 'polymath-public-site-release-v1',
