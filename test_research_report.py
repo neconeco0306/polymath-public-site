@@ -23,7 +23,7 @@ class PublicResearchEvidenceTests(unittest.TestCase):
   import tempfile
   with tempfile.TemporaryDirectory() as t:
    out=Path(t)/'dist';d=build('https://polymath-research-jp.onrender.com/',out)
-   self.assertEqual(set(d['files']),{'index.html','social-card.png','experiments/kepler-227.html','experiments/period-search.html'})
+   self.assertEqual(set(d['files']),{'index.html','en.html','archive.html','social-card.png','experiments/kepler-227.html','experiments/period-search.html'})
    self.assertFalse((out/'research').exists())
 
 if __name__=='__main__':unittest.main()
