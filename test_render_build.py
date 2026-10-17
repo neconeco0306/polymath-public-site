@@ -8,7 +8,7 @@ class RenderBuildTests(unittest.TestCase):
     def run_build(self, url=None):
         with tempfile.TemporaryDirectory() as td:
             t = Path(td)
-            for fn in ('index.html','social-card.png.b64','prepare_release.py','test_site.py','test_release.py','render-build.sh'):
+            for fn in ('index.html','en.html','archive.html','social-card.png.b64','prepare_release.py','test_site.py','test_release.py','render-build.sh'):
                 (t/fn).write_bytes((ROOT/fn).read_bytes())
             (t/'experiments').mkdir(exist_ok=True)
             (t/'experiments/kepler-227.html').write_bytes((ROOT/'experiments/kepler-227.html').read_bytes())
