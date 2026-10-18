@@ -27,7 +27,7 @@ class BrowserLayoutTests(unittest.TestCase):
         <script>
         (function(){
           const run=()=>{
-            const ids=['findings','observations','method','archive'];
+            const ids=['findings','updates','observations','method','archive'];
             const nav=Array.from(document.querySelectorAll('header a')).map(e=>{
               const r=e.getBoundingClientRect();
               return {left:r.left,right:r.right,width:r.width};
@@ -38,6 +38,8 @@ class BrowserLayoutTests(unittest.TestCase):
               bodyWidth:document.body.scrollWidth,
               lang:document.documentElement.lang,
               cards:document.querySelectorAll('.finding').length,
+              updates:document.querySelectorAll('.update-card').length,
+              updateVisible:Array.from(document.querySelectorAll('.update-card')).every(e=>{const r=e.getBoundingClientRect();return r.width>0&&r.left>=-2&&r.right<=window.innerWidth+2}),
               anchors:ids.every(i=>!!document.getElementById(i)),
               controls:nav
             }));
@@ -68,6 +70,8 @@ class BrowserLayoutTests(unittest.TestCase):
                         stats=json.loads(html.unescape(m.group(1)))
                         self.assertEqual(stats['lang'],language)
                         self.assertEqual(stats['cards'],6)
+                        self.assertEqual(stats['updates'],7)
+                        self.assertTrue(stats['updateVisible'],stats)
                         self.assertTrue(stats['anchors'])
                         self.assertLessEqual(stats['documentWidth'],stats['width']+2,stats)
                         self.assertLessEqual(stats['bodyWidth'],stats['width']+2,stats)
