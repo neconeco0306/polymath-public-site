@@ -27,6 +27,12 @@ class ReleaseTests(unittest.TestCase):
             self.assertIn(f'content="https://research.polymath.invalid-site.net/social-card.png?v={card_hash}"',html)
             self.assertIn('rel="canonical"',html)
             self.assertEqual(data['canonical_url'],'https://research.polymath.invalid-site.net/')
+            english = (out/'en.html').read_text(encoding='utf-8')
+            archive = (out/'archive.html').read_text(encoding='utf-8')
+            self.assertIn('rel="canonical" href="https://research.polymath.invalid-site.net/en.html"',english)
+            self.assertIn('name="twitter:image" content="https://research.polymath.invalid-site.net/social-card.png?v=',english)
+            self.assertIn('content="noindex, follow"',archive)
+            self.assertEqual(set(data['files']),{'index.html','en.html','archive.html','social-card.png','experiments/kepler-227.html','experiments/period-search.html'})
             self.assertFalse(data['published'])
             for name,digest in data['files'].items():
                 self.assertEqual(hashlib.sha256((out/name).read_bytes()).hexdigest(),digest)
@@ -34,6 +40,8 @@ class ReleaseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as t:
             src=Path(t)/'src';src.mkdir()
             (src/'index.html').write_bytes((ROOT/'index.html').read_bytes())
+            for page in ('en.html', 'archive.html'):
+                (src/page).write_bytes((ROOT/page).read_bytes())
             (src/'experiments').mkdir()
             (src/'experiments/kepler-227.html').write_bytes((ROOT/'experiments/kepler-227.html').read_bytes())
             (src/'experiments/period-search.html').write_bytes((ROOT/'experiments/period-search.html').read_bytes())
@@ -44,6 +52,8 @@ class ReleaseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as t:
             src=Path(t)/'src';src.mkdir()
             (src/'index.html').write_text((ROOT/'index.html').read_text()+'github.com/private',encoding='utf-8')
+            for page in ('en.html', 'archive.html'):
+                (src/page).write_bytes((ROOT/page).read_bytes())
             (src/'experiments').mkdir()
             (src/'experiments/kepler-227.html').write_bytes((ROOT/'experiments/kepler-227.html').read_bytes())
             (src/'experiments/period-search.html').write_bytes((ROOT/'experiments/period-search.html').read_bytes())
