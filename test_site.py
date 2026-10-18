@@ -84,4 +84,28 @@ class SiteTests(unittest.TestCase):
         for token in ('id="research-index"','HPA-001','PAA-001','MAINT-001','ZCAI-001','FRACTURE','Graph固有の性能優位は示せませんでした'):
             self.assertIn(token,old)
 
+
+    def test_20261019_research_digest_is_traceable_and_bilingual(self):
+        ids=('market-002','sarashina3','game24','voting','calibration','market-001','pocket-lab')
+        for name,(html,doc) in self.pages.items():
+            with self.subTest(page=name):
+                self.assertIn('id="updates"',html)
+                self.assertIn('href="#updates"',html)
+                self.assertEqual(html.count('class="update-card"'),7)
+                self.assertTrue(all('id="update-'+item+'"' in html for item in ids))
+                self.assertIn('datetime="2026-10-19"',html)
+                self.assertIn('datetime="2026-10-18"',html)
+                self.assertIn('@media(max-width:750px)',html)
+                self.assertEqual(html.count('class="update-stage"'),7)
+                self.assertEqual(html.count('data-stage="protocol"'),2)
+                self.assertEqual(html.count('data-stage="measured"'),3)
+                self.assertEqual(html.count('data-stage="exploratory"'),1)
+                self.assertEqual(html.count('data-stage="prototype"'),1)
+                self.assertIn('4,086',html)
+                self.assertIn('81/81',html)
+                self.assertIn('27/81',html)
+                self.assertIn('0.1467',html)
+                self.assertIn('5.7585',html)
+                self.assertIn('2026',html)
+
 if __name__=='__main__':unittest.main(verbosity=2)
