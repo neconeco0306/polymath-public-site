@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f3f0e8">
+<meta name="description" content="POLYMATH Zero-Cost AI Labの公開研究記録。ZCAI-001 v0.7の実装成果、検証済みの範囲、引用照合デモ、未達の独立評価を公開しています。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ZERO-COST AI LAB — POLYMATH">
+<meta property="og:description" content="有料AI開発機能を無料OSSでどこまで再現できるか。開発結果と未検証領域を区別した公開研究ノート。">
+<title>ZERO-COST AI LAB — POLYMATH Research</title>
+<style>
+:root{--bg:#f3f0e8;--paper:#fffcf5;--ink:#1b302c;--muted:#5c6d65;--line:#cfdbd1;--jade:#286d57;--lime:#d8e4bf;--orange:#a86442;--dark:#142a27;--shadow:0 18px 55px rgba(25,45,35,.08)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,Arial,sans-serif;line-height:1.85}button,textarea{font:inherit}a{color:inherit;text-underline-offset:4px}a:focus-visible,button:focus-visible,textarea:focus-visible{outline:3px solid var(--orange);outline-offset:4px}h1,h2,h3,p{margin-top:0}.wrap{max-width:1160px;margin:auto;padding-inline:30px}.skip{position:absolute;left:-9999px;top:8px;background:white;padding:10px 15px;z-index:20}.skip:focus{left:10px}
+header{background:var(--paper);border-bottom:1px solid var(--line)}header .wrap{min-height:74px;display:flex;align-items:center;gap:20px;justify-content:space-between}.mark{font-family:Georgia,serif;letter-spacing:.12em;font-weight:700;font-size:21px;text-decoration:none}.mark .dot{color:var(--orange)}nav{display:flex;gap:21px;flex-wrap:wrap}nav a{font-size:12px;font-weight:700;text-decoration:none;color:#35534a}nav a:hover{text-decoration:underline}.mini{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--orange)}
+.hero{padding:90px 0 75px;position:relative;overflow:hidden}.hero .wrap{display:grid;grid-template-columns:1.14fr .86fr;gap:56px;align-items:center}.hero h1{font:500 clamp(44px,5.6vw,78px)/1.21 Georgia,"Yu Mincho",serif;letter-spacing:-.06em;margin:18px 0 24px}.hero h1 em{color:var(--jade);font-style:normal}.hero p{font-size:16px;max-width:650px;color:#465e53}.hero strong{color:var(--ink)}.hero-meta{margin-top:28px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:11px;color:#51665d}.hero-meta span{padding:5px 11px;border:1px solid #b3c7b7}.hero-art{background:#dce7d7;min-height:370px;padding:26px;display:flex;flex-direction:column;justify-content:space-between;position:relative;isolation:isolate;box-shadow:var(--shadow)}.hero-art:before{content:"";position:absolute;width:260px;height:260px;border:1px solid #89aa96;border-radius:50%;right:-65px;top:45px;box-shadow:0 0 0 32px rgba(40,109,87,.07),0 0 0 75px rgba(40,109,87,.045);z-index:-1}.hero-art .artifact{font:400 clamp(58px,7vw,105px)/1 Georgia,serif;letter-spacing:-.07em;color:#205f4b}.hero-art .artifact small{font-size:16px;letter-spacing:.04em;vertical-align:top}.hero-art .art-caption{background:rgba(255,252,245,.85);padding:13px 17px;font-size:12px;font-weight:650;max-width:290px}.hero-art .art-caption b{display:block;font-size:11px;color:var(--orange);letter-spacing:.08em}
+.metrics{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#e7eee5}.metrics .wrap{display:grid;grid-template-columns:repeat(4,1fr)}.metric{padding:24px 22px 24px 0;border-right:1px solid #cbd9ca;margin-right:22px}.metric:last-child{border:0;margin:0}.metric strong{font:500 39px/1.1 Georgia,serif;letter-spacing:-.05em;color:var(--jade);display:block}.metric span{font-size:12px;display:block;margin-top:9px;color:#53655d}.metric small{display:block;font-size:11px;margin-top:5px;color:#657970}
+section{padding:80px 0}.section-head{max-width:790px;margin-bottom:33px}.section-head h2{font:500 clamp(30px,4.1vw,47px)/1.25 Georgia,"Yu Mincho",serif;letter-spacing:-.045em;margin:13px 0}.section-head p{color:var(--muted);font-size:14px}.statement{font-size:14px;background:var(--paper);border-left:3px solid var(--orange);padding:17px 22px;margin:25px 0 0}.status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.status-card{background:var(--paper);border:1px solid var(--line);padding:24px}.status-card .icon{font:500 27px Georgia,serif;color:var(--jade)}.status-card h3{font-size:18px;margin:12px 0 8px}.status-card p{font-size:13px;color:var(--muted);margin:0}.status-card .foot{font-size:11px;font-weight:750;color:var(--orange);margin-top:18px}
+.pipeline{background:var(--dark);color:#ecf3e9}.pipeline .section-head p{color:#bfd2c5}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:30px}.flow article{border-top:1px solid #547265;padding-top:18px}.flow article span{font:500 24px Georgia,serif;color:#a7cdad}.flow h3{font-size:16px;line-height:1.5;margin:12px 0 7px}.flow p{font-size:12px;color:#bed0c3}.flow-note{margin:30px 0 0;color:#ccdbd0;font-size:12px;border-top:1px solid #446556;padding-top:17px}
+.demo{background:#e9e9db}.demo-shell{background:var(--paper);border:1px solid #c8d5c7;box-shadow:var(--shadow);display:grid;grid-template-columns:1fr 1fr}.demo-intro{padding:32px 34px;background:#ebf1e8}.demo-intro h3{font-size:22px;margin-bottom:9px}.demo-intro p,.demo-intro li{font-size:12px;color:#4b6659}.demo-fields{padding:32px 34px}.demo-fields label{display:block;font-size:12px;font-weight:750;margin-bottom:8px}.demo-fields textarea{width:100%;resize:vertical;background:white;border:1px solid #bfcfc0;border-radius:0;color:#293e34;padding:12px;font-size:13px;line-height:1.7;min-height:105px;margin-bottom:19px}.demo-fields textarea#quotes{min-height:84px}.buttons{display:flex;gap:9px;flex-wrap:wrap}.button{border:1px solid var(--ink);background:var(--ink);color:white;cursor:pointer;font-size:13px;font-weight:750;padding:12px 19px}.button.secondary{background:transparent;color:var(--ink)}.button:hover{background:var(--jade);color:white}.results{margin-top:19px;display:grid;gap:8px}.result{border:1px solid #d1dad0;padding:11px 14px;background:#faf9f3;font-size:12px}.result strong{display:block;font-size:11px;margin-bottom:4px}.result.ok{border-left:4px solid #28785b}.result.no{border-left:4px solid #a46142}.hash{font-size:10px;overflow-wrap:anywhere;color:#5c7065;margin-top:14px}.demo-warning{font-size:12px;color:#6a583f;margin:17px 0 0}
+.gates{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.gate{border-top:2px solid var(--ink);padding:18px 5px}.gate h3{font-size:17px}.gate p{font-size:13px;color:var(--muted);margin:0}.gate .tag{font-size:11px;font-weight:800;color:var(--orange);letter-spacing:.09em}
+.timeline{background:#e9efe7}.timeline-list{border-top:1px solid #aebfaf}.timeline-item{display:grid;grid-template-columns:130px 1fr;gap:26px;padding:23px 0;border-bottom:1px solid #b9cbb9}.timeline-item time{font:500 22px Georgia,serif;color:var(--jade)}.timeline-item h3{font-size:17px;margin:0 0 7px}.timeline-item p{font-size:13px;color:#4f655b;margin:0}
+footer{border-top:1px solid var(--line);padding:32px 0 50px;background:var(--paper);font-size:12px;color:#52655b}footer .wrap{display:flex;justify-content:space-between;gap:22px;flex-wrap:wrap}footer a{font-weight:750}
+@media(max-width:900px){.hero .wrap{grid-template-columns:1fr}.hero-art{min-height:290px}.metrics .wrap{grid-template-columns:repeat(2,1fr)}.metric:nth-child(2){border:0}.metric:nth-child(-n+2){border-bottom:1px solid #cbd9ca}.status-grid{grid-template-columns:1fr 1fr}.flow{grid-template-columns:1fr 1fr}.demo-shell{grid-template-columns:1fr}}
+@media(max-width:610px){.wrap{padding-inline:19px}header .wrap{padding-block:15px;align-items:flex-start;flex-direction:column;gap:10px}nav{gap:9px 18px}.hero{padding:54px 0}.hero h1{font-size:43px}.hero-art{min-height:245px;padding:22px}.hero-art .artifact{font-size:73px}.metrics .wrap{grid-template-columns:1fr 1fr}.metric{padding:18px 8px 18px 0;margin-right:8px}.metric strong{font-size:30px}.metric span{font-size:11px}section{padding:54px 0}.status-grid,.flow,.gates{grid-template-columns:1fr}.demo-fields,.demo-intro{padding:21px}.timeline-item{grid-template-columns:1fr;gap:8px}.timeline-item time{font-size:19px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">本文へ移動</a>
+<header id="top"><div class="wrap">
+<a class="mark" href="#top">POLYMATH<span class="dot">.</span></a>
+<nav aria-label="ページ内メニュー"><a href="#status">研究の現在地</a><a href="#architecture">仕組み</a><a href="#demo">デモ</a><a href="#limits">未検証</a><a href="#history">研究履歴</a></nav>
+</div></header>
+<main id="main">
+<section class="hero"><div class="wrap"><div>
+<div class="mini">POLYMATH / PUBLIC RESEARCH NOTE 001</div>
+<h1>有料AI機能を、<br><em>無料の技術で。</em><br>どこまで作れるか。</h1>
+<p>有料のAI開発者向け機能を、オープンソースと無料で利用できる技術の組合せで再現する研究。<strong>作れた部分だけでなく、まだ証明できていない部分も公開します。</strong></p>
+<div class="hero-meta"><span>ZERO-COST AI LAB</span><span>ZCAI-001 / v0.7</span><span>記録更新：2026.10.19</span></div>
+</div><div class="hero-art" aria-label="ZCAI-001研究の概念図">
+<div class="mini">FIRST PROJECT / WEB RETRIEVAL</div><div class="artifact">001<small> / R&amp;D</small></div>
+<div class="art-caption"><b>RESEARCH STATUS</b>ローカル試作は進展。<br>有料APIとの品質同等性は未検証。</div>
+</div></div></section>
+<div class="metrics"><div class="wrap" aria-label="過去の開発記録に基づく結果">
+<div class="metric"><strong>92/92</strong><span>v0.7 開発テスト</span><small>作者側・ローカルでの記録</small></div>
+<div class="metric"><strong>30/30</strong><span>人工検索課題</span><small>合成データのみ</small></div>
+<div class="metric"><strong>15/15</strong><span>HTML反例回帰</span><small>既知の反例セット</small></div>
+<div class="metric"><strong>50/50</strong><span>ローカル技術HTMLの非空抽出</span><small>v0.6・単一文書群</small></div>
+</div></div>
+<section id="status"><div class="wrap"><div class="section-head"><div class="mini">01 / WHERE WE STAND</div>
+<h2>「動いた」と「使える」は、違う。</h2>
+<p>第1弾はAI向けWeb検索・本文抽出・出典照合の基礎機能。有料APIを呼び出さずに動くローカルの実験実装まで進みました。ただし、開発テストの通過を有料サービスの代替品質とは扱いません。</p></div>
+<div class="status-grid">
+<article class="status-card"><div class="icon">↗</div><h3>実装した機能</h3><p>HTML本文抽出、ローカル全文検索、localhost JSON API、保存文書のSHA-256記録、引用文字列・出典ID・差分の照合。SearXNG連携アダプターも開発。</p><div class="foot">IMPLEMENTED / LOCAL PROTOTYPE</div></article>
+<article class="status-card"><div class="icon">≡</div><h3>確認した範囲</h3><p>v0.7の92件の開発テスト、人工検索30課題、既知HTML反例15件が報告上PASS。配布ZIPのファイルハッシュ30件一致と整合性チェックも実施。</p><div class="foot">AUTHOR-REPORTED TEST EVIDENCE</div></article>
+<article class="status-card"><div class="icon">?</div><h3>まだ言えないこと</h3><p>有料検索APIと同等の精度、現実のWeb検索での安定性、引用の意味的正確さ、公開サービスの安全性、第三者による再現性は未立証です。</p><div class="foot">INDEPENDENT REVIEW / PENDING</div></article>
+</div><p class="statement"><strong>重要：</strong>「追加API課金なし」は研究の設計条件であり、電力・端末・サーバー・保守を含む総運用コストが0円という意味ではありません。製品としての正式公開や独立認証は保留中です。</p></div></section>
+<section class="pipeline" id="architecture"><div class="wrap"><div class="section-head"><div class="mini" style="color:#c9daa5">02 / HOW IT WORKS</div><h2>既存の無料技術を、検証できる形でつなぐ。</h2><p>再発明そのものより、入出力の追跡、失敗時の検出、比較可能な評価方法を重視します。</p></div>
+<div class="flow">
+<article><span>01</span><h3>資料を取得・受け取る</h3><p>許可されたHTMLや公開データを入力。出所URLは未検証なら自己申告として扱う。</p></article>
+<article><span>02</span><h3>本文を抽出・登録する</h3><p>ローカル抽出と任意の無料OSSアダプター。本文・資料ID・ハッシュを保存する。</p></article>
+<article><span>03</span><h3>検索と引用を照合する</h3><p>保存資料の検索・引用箇所の文字列一致・欠落やハッシュ不一致を検出。</p></article>
+<article><span>04</span><h3>独立評価で判定する</h3><p>権利確認済みの実データ、盲検ラベル、既存OSSとの同条件比較を予定。現在は未完了。</p></article>
+</div><p class="flow-note">構造一致 ≠ 文意の裏付け ≠ 出典が本物 ≠ 事実の証明。これらは別々の検証ゲートです。</p></div></section>
+<section class="demo" id="demo"><div class="wrap"><div class="section-head"><div class="mini">03 / TRY THE IDEA</div><h2>引用は、本当に本文の中にある？</h2><p>v0.7が扱う基本概念を、ブラウザーだけで再現したミニデモです。文字列一致だけを検査し、AIによる真偽判定はしません。送信・保存・外部通信はありません。</p></div>
+<div class="demo-shell">
+<div class="demo-intro"><h3>LOCAL CITATION CHECK</h3><p>左のデモはバックエンドの本体APIではありません。検証対象の本文と引用を貼り付け、文字列が含まれるかを調べます。</p>
+<ol><li>本文の中に引用が存在すれば「一致」</li><li>存在しなければ「未一致」</li><li>一致しても内容の真実性は判定しません</li></ol>
+<p>研究ではさらに、保存資料のハッシュ照合、数値相違の疑い、未登録資料なども検査します。</p></div>
+<div class="demo-fields">
+<label for="source">検査する本文</label>
+<textarea id="source" spellcheck="false">2026年10月17日、ZCAI-001 v0.7の開発テストは92件成功しました。人工データの検索30課題でも動作を確認しました。有料APIと同等の性能はまだ検証していません。</textarea>
+<label for="quotes">照合する引用（1行につき1件）</label>
+<textarea id="quotes" spellcheck="false">開発テストは92件成功しました
+有料APIと同等の性能を実証しました</textarea>
+<div class="buttons"><button id="run" class="button" type="button">照合する →</button><button id="reset" class="button secondary" type="button">初期値に戻す</button></div>
+<div class="results" id="results" aria-live="polite" aria-label="照合結果"></div>
+<div class="hash" id="digest">本文のSHA-256：未計算</div>
+<p class="demo-warning">※この判定は文字列の包含チェックです。意味の正しさ・リンク先の正当性・最新性は確認しません。</p>
+</div></div></div></section>
+<section id="limits"><div class="wrap"><div class="section-head"><div class="mini">04 / INDEPENDENT EVIDENCE GATE</div><h2>未達を、未達のまま示す。</h2><p>次の条件が揃うまでは「有料機能を無料で再現できた」とは結論づけません。</p></div>
+<div class="gates">
+<article class="gate"><div class="tag">NOT YET VERIFIED</div><h3>権利確認済みの実Web評価</h3><p>少なくとも50件の実HTMLページと30件の検索課題で、出典一致、関連性、本文の欠落を盲検評価する。</p></article>
+<article class="gate"><div class="tag">NOT YET VERIFIED</div><h3>既存OSSとの同条件比較</h3><p>SearXNG、Trafilatura、必要ならCrawl4AIと比較。精度・遅延・リソース・保守負荷を揃えて計測する。</p></article>
+<article class="gate"><div class="tag">NOT YET VERIFIED</div><h3>引用の意味的な正確さ</h3><p>「引用が存在する」だけでは根拠にならない。独立に作成した正解ラベルで誤検出・見逃し率を測定する。</p></article>
+<article class="gate"><div class="tag">NOT YET VERIFIED</div><h3>独立監査・安全性・需要</h3><p>LAB2の批判的評価、実環境のセキュリティ検査、利用者の具体的な需要を確認してから採否を判断する。</p></article>
+</div><p class="statement"><strong>指標の注意：</strong>過去の見出し保持率や文字列存在率はHTML構造の診断値です。記事本文の品質、関連検索精度、有料製品との同等性を示すものではありません。</p></div></section>
+<section class="timeline" id="history"><div class="wrap"><div class="section-head"><div class="mini">05 / CHANGELOG</div><h2>成功だけでなく、修正も残す。</h2><p>過去の研究記録を公開向けに要約。数字は再試験の保証ではなく、各時点の記録です。</p></div>
+<div class="timeline-list">
+<div class="timeline-item"><time datetime="2026-10-17">v0.3</time><div><h3>既知の反例8件を修正</h3><p>元の実装にあった本文欠損・順序逆転・再登録時の古い本文残存を修復。15/15反例を確認。</p></div></div>
+<div class="timeline-item"><time datetime="2026-10-17">v0.5</time><div><h3>固定ラベル式のオフライン評価器</h3><p>Precision@k、Recall@k、nDCG@kを計算する道具を追加。数字が出ること自体は実検索の精度証拠ではありません。</p></div></div>
+<div class="timeline-item"><time datetime="2026-10-17">v0.6</time><div><h3>HTML主見出しの抽出方法を改善</h3><p>ローカル技術HTML 50/50で非空抽出。見出しの改善は確認したものの、独立の本文品質評価ではありません。</p></div></div>
+<div class="timeline-item"><time datetime="2026-10-17">v0.7</time><div><h3>引用・出典の整合性チェッカー</h3><p>引用欠落、保存資料のハッシュ相違、原文不一致、未登録資料、数値相違の疑いを扱う。開発テスト92/92。意味的妥当性はNOT_TESTED。</p></div></div>
+<div class="timeline-item"><time datetime="2026-10-17">OSS Adapter</time><div><h3>無料Markdown変換経路を試作</h3><p>std-lib抽出と任意のTrafilaturaアダプターを隔離実装。模擬実装を含む22/22の開発テストはPASS、実Trafilatura品質試験は未実施。</p></div></div>
+</div></div></section>
+</main>
+<footer><div class="wrap"><div><strong>POLYMATH / ZERO-COST AI LAB</strong><p>公開研究ノート｜2026-10-19。実装実験の紹介であり、提供中の無料検索APIではありません。</p></div><div><a href="#top">ページ先頭へ ↑</a><p>Evidence before claims.</p></div></div></footer>
+<script>
+(()=>{"use strict";
+const source=document.getElementById("source"), quotes=document.getElementById("quotes"), results=document.getElementById("results"), digest=document.getElementById("digest");
+const originalSource=source.value, originalQuotes=quotes.value;
+const hex=async text=>{if(!window.crypto||!crypto.subtle)return "この環境では取得できません";const bytes=new TextEncoder().encode(text), h=await crypto.subtle.digest("SHA-256",bytes);return Array.from(new Uint8Array(h),x=>x.toString(16).padStart(2,"0")).join("")};
+async function run(){const s=source.value, q=quotes.value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);results.replaceChildren();const sum=document.createElement("p");sum.textContent=q.length?q.filter(x=>s.includes(x)).length+" / "+q.length+" 件が本文内に存在します":"1行以上の引用を入力してください";results.appendChild(sum);q.forEach((text,i)=>{const hit=s.includes(text),row=document.createElement("div"),title=document.createElement("strong"),body=document.createElement("span");row.className="result "+(hit?"ok":"no");title.textContent=(i+1)+". "+(hit?"一致（文字列のみ）":"未一致");body.textContent=text;row.append(title,body);results.appendChild(row)});digest.textContent="本文のSHA-256："+await hex(s)}
+document.getElementById("run").addEventListener("click",run);document.getElementById("reset").addEventListener("click",()=>{source.value=originalSource;quotes.value=originalQuotes;run()});run();
+})();
+</script>
+</body>
+</html>
