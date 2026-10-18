@@ -3,106 +3,98 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#f3f0e8">
-<meta name="description" content="POLYMATH Zero-Cost AI Labの公開研究記録。ZCAI-001 v0.7の実装成果、検証済みの範囲、引用照合デモ、未達の独立評価を公開しています。">
+<meta name="theme-color" content="#f7f8f4">
+<meta name="description" content="有料AI機能を無料の技術でどこまで作れた？POLYMATHの5つの機能を1分で紹介。クリックして説明を読み、引用チェックの無料デモを試せます。">
+<meta property="og:title" content="何が無料でできる？ | POLYMATH Zero-Cost AI Lab">
+<meta property="og:description" content="本文抽出、資料検索、引用照合、Markdown変換、無料検索連携。使える範囲と未検証事項を分かりやすく公開。">
 <meta property="og:type" content="website">
-<meta property="og:title" content="ZERO-COST AI LAB — POLYMATH">
-<meta property="og:description" content="有料AI開発機能を無料OSSでどこまで再現できるか。開発結果と未検証領域を区別した公開研究ノート。">
-<title>ZERO-COST AI LAB — POLYMATH Research</title>
+<title>何が無料でできる？ | POLYMATH Zero-Cost AI Lab</title>
 <style>
-:root{--bg:#f3f0e8;--paper:#fffcf5;--ink:#1b302c;--muted:#5c6d65;--line:#cfdbd1;--jade:#286d57;--lime:#d8e4bf;--orange:#a86442;--dark:#142a27;--shadow:0 18px 55px rgba(25,45,35,.08)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,Arial,sans-serif;line-height:1.85}button,textarea{font:inherit}a{color:inherit;text-underline-offset:4px}a:focus-visible,button:focus-visible,textarea:focus-visible{outline:3px solid var(--orange);outline-offset:4px}h1,h2,h3,p{margin-top:0}.wrap{max-width:1160px;margin:auto;padding-inline:30px}.skip{position:absolute;left:-9999px;top:8px;background:white;padding:10px 15px;z-index:20}.skip:focus{left:10px}
-header{background:var(--paper);border-bottom:1px solid var(--line)}header .wrap{min-height:74px;display:flex;align-items:center;gap:20px;justify-content:space-between}.mark{font-family:Georgia,serif;letter-spacing:.12em;font-weight:700;font-size:21px;text-decoration:none}.mark .dot{color:var(--orange)}nav{display:flex;gap:21px;flex-wrap:wrap}nav a{font-size:12px;font-weight:700;text-decoration:none;color:#35534a}nav a:hover{text-decoration:underline}.mini{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--orange)}
-.hero{padding:90px 0 75px;position:relative;overflow:hidden}.hero .wrap{display:grid;grid-template-columns:1.14fr .86fr;gap:56px;align-items:center}.hero h1{font:500 clamp(44px,5.6vw,78px)/1.21 Georgia,"Yu Mincho",serif;letter-spacing:-.06em;margin:18px 0 24px}.hero h1 em{color:var(--jade);font-style:normal}.hero p{font-size:16px;max-width:650px;color:#465e53}.hero strong{color:var(--ink)}.hero-meta{margin-top:28px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:11px;color:#51665d}.hero-meta span{padding:5px 11px;border:1px solid #b3c7b7}.hero-art{background:#dce7d7;min-height:370px;padding:26px;display:flex;flex-direction:column;justify-content:space-between;position:relative;isolation:isolate;box-shadow:var(--shadow)}.hero-art:before{content:"";position:absolute;width:260px;height:260px;border:1px solid #89aa96;border-radius:50%;right:-65px;top:45px;box-shadow:0 0 0 32px rgba(40,109,87,.07),0 0 0 75px rgba(40,109,87,.045);z-index:-1}.hero-art .artifact{font:400 clamp(58px,7vw,105px)/1 Georgia,serif;letter-spacing:-.07em;color:#205f4b}.hero-art .artifact small{font-size:16px;letter-spacing:.04em;vertical-align:top}.hero-art .art-caption{background:rgba(255,252,245,.85);padding:13px 17px;font-size:12px;font-weight:650;max-width:290px}.hero-art .art-caption b{display:block;font-size:11px;color:var(--orange);letter-spacing:.08em}
-.metrics{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#e7eee5}.metrics .wrap{display:grid;grid-template-columns:repeat(4,1fr)}.metric{padding:24px 22px 24px 0;border-right:1px solid #cbd9ca;margin-right:22px}.metric:last-child{border:0;margin:0}.metric strong{font:500 39px/1.1 Georgia,serif;letter-spacing:-.05em;color:var(--jade);display:block}.metric span{font-size:12px;display:block;margin-top:9px;color:#53655d}.metric small{display:block;font-size:11px;margin-top:5px;color:#657970}
-section{padding:80px 0}.section-head{max-width:790px;margin-bottom:33px}.section-head h2{font:500 clamp(30px,4.1vw,47px)/1.25 Georgia,"Yu Mincho",serif;letter-spacing:-.045em;margin:13px 0}.section-head p{color:var(--muted);font-size:14px}.statement{font-size:14px;background:var(--paper);border-left:3px solid var(--orange);padding:17px 22px;margin:25px 0 0}.status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.status-card{background:var(--paper);border:1px solid var(--line);padding:24px}.status-card .icon{font:500 27px Georgia,serif;color:var(--jade)}.status-card h3{font-size:18px;margin:12px 0 8px}.status-card p{font-size:13px;color:var(--muted);margin:0}.status-card .foot{font-size:11px;font-weight:750;color:var(--orange);margin-top:18px}
-.pipeline{background:var(--dark);color:#ecf3e9}.pipeline .section-head p{color:#bfd2c5}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:30px}.flow article{border-top:1px solid #547265;padding-top:18px}.flow article span{font:500 24px Georgia,serif;color:#a7cdad}.flow h3{font-size:16px;line-height:1.5;margin:12px 0 7px}.flow p{font-size:12px;color:#bed0c3}.flow-note{margin:30px 0 0;color:#ccdbd0;font-size:12px;border-top:1px solid #446556;padding-top:17px}
-.demo{background:#e9e9db}.demo-shell{background:var(--paper);border:1px solid #c8d5c7;box-shadow:var(--shadow);display:grid;grid-template-columns:1fr 1fr}.demo-intro{padding:32px 34px;background:#ebf1e8}.demo-intro h3{font-size:22px;margin-bottom:9px}.demo-intro p,.demo-intro li{font-size:12px;color:#4b6659}.demo-fields{padding:32px 34px}.demo-fields label{display:block;font-size:12px;font-weight:750;margin-bottom:8px}.demo-fields textarea{width:100%;resize:vertical;background:white;border:1px solid #bfcfc0;border-radius:0;color:#293e34;padding:12px;font-size:13px;line-height:1.7;min-height:105px;margin-bottom:19px}.demo-fields textarea#quotes{min-height:84px}.buttons{display:flex;gap:9px;flex-wrap:wrap}.button{border:1px solid var(--ink);background:var(--ink);color:white;cursor:pointer;font-size:13px;font-weight:750;padding:12px 19px}.button.secondary{background:transparent;color:var(--ink)}.button:hover{background:var(--jade);color:white}.results{margin-top:19px;display:grid;gap:8px}.result{border:1px solid #d1dad0;padding:11px 14px;background:#faf9f3;font-size:12px}.result strong{display:block;font-size:11px;margin-bottom:4px}.result.ok{border-left:4px solid #28785b}.result.no{border-left:4px solid #a46142}.hash{font-size:10px;overflow-wrap:anywhere;color:#5c7065;margin-top:14px}.demo-warning{font-size:12px;color:#6a583f;margin:17px 0 0}
-.gates{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.gate{border-top:2px solid var(--ink);padding:18px 5px}.gate h3{font-size:17px}.gate p{font-size:13px;color:var(--muted);margin:0}.gate .tag{font-size:11px;font-weight:800;color:var(--orange);letter-spacing:.09em}
-.timeline{background:#e9efe7}.timeline-list{border-top:1px solid #aebfaf}.timeline-item{display:grid;grid-template-columns:130px 1fr;gap:26px;padding:23px 0;border-bottom:1px solid #b9cbb9}.timeline-item time{font:500 22px Georgia,serif;color:var(--jade)}.timeline-item h3{font-size:17px;margin:0 0 7px}.timeline-item p{font-size:13px;color:#4f655b;margin:0}
-footer{border-top:1px solid var(--line);padding:32px 0 50px;background:var(--paper);font-size:12px;color:#52655b}footer .wrap{display:flex;justify-content:space-between;gap:22px;flex-wrap:wrap}footer a{font-weight:750}
-@media(max-width:900px){.hero .wrap{grid-template-columns:1fr}.hero-art{min-height:290px}.metrics .wrap{grid-template-columns:repeat(2,1fr)}.metric:nth-child(2){border:0}.metric:nth-child(-n+2){border-bottom:1px solid #cbd9ca}.status-grid{grid-template-columns:1fr 1fr}.flow{grid-template-columns:1fr 1fr}.demo-shell{grid-template-columns:1fr}}
-@media(max-width:610px){.wrap{padding-inline:19px}header .wrap{padding-block:15px;align-items:flex-start;flex-direction:column;gap:10px}nav{gap:9px 18px}.hero{padding:54px 0}.hero h1{font-size:43px}.hero-art{min-height:245px;padding:22px}.hero-art .artifact{font-size:73px}.metrics .wrap{grid-template-columns:1fr 1fr}.metric{padding:18px 8px 18px 0;margin-right:8px}.metric strong{font-size:30px}.metric span{font-size:11px}section{padding:54px 0}.status-grid,.flow,.gates{grid-template-columns:1fr}.demo-fields,.demo-intro{padding:21px}.timeline-item{grid-template-columns:1fr;gap:8px}.timeline-item time{font-size:19px}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+:root{color-scheme:light;--bg:#f7f8f4;--paper:#fff;--ink:#19352f;--muted:#4f6960;--green:#16705b;--green2:#e7f3ed;--line:#dce6df;--orange:#b45b34;--orange2:#fff2e8;--sans:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",Meiryo,sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;color:var(--ink);background:var(--bg);font:15px/1.75 var(--sans);overflow-wrap:anywhere}a{color:inherit;text-underline-offset:3px}button,textarea{font:inherit}button{cursor:pointer}a:focus-visible,button:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid #c16b42;outline-offset:3px}
+.container{width:min(100% - 44px,1060px);margin-inline:auto}.skip{position:absolute;left:-9999px;top:10px;background:#fff;padding:12px;z-index:50}.skip:focus{left:10px}
+.site-header{position:sticky;top:0;z-index:20;background:#fffffff2;backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.header-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:20px}.logo{text-decoration:none;font:700 21px Georgia,serif;letter-spacing:.08em;white-space:nowrap}.logo .dot{color:var(--orange)}.header-links{display:flex;align-items:center;gap:21px;font-size:12px;font-weight:750}.header-links a{text-decoration:none}.header-links a:hover{text-decoration:underline}.header-links .top-demo{background:var(--green);color:white;border-radius:6px;padding:9px 13px}
+.eyebrow{color:var(--green);font-size:11px;font-weight:850;letter-spacing:.12em}.hero{padding:52px 0 19px}.hero-inner{display:flex;gap:40px;align-items:flex-start;justify-content:space-between}.hero-main{max-width:800px}.hero h1{font-size:clamp(30px,4.2vw,53px);letter-spacing:-.06em;line-height:1.38;font-weight:800;margin:12px 0 13px}.hero h1 .highlight{color:var(--green)}.hero .lead{font-size:16px;color:#3f5b52;line-height:1.86;margin:0;max-width:750px}.hero-stamp{border:1px solid #c4ded2;background:#eaf5ed;padding:15px 18px;border-radius:11px;flex-shrink:0;min-width:140px;text-align:center;color:var(--green);margin-top:14px}.hero-stamp strong{display:block;font:600 35px/1.2 Georgia,serif}.hero-stamp span{font-size:10px;font-weight:770}
+.guide{padding:20px 0 57px}.guide-panel{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 15px 48px #2649370d;padding:24px}.guide-head{display:flex;align-items:center;gap:12px;justify-content:space-between;margin-bottom:15px}.guide-title{font-size:20px;margin:0;font-weight:820;letter-spacing:-.03em}.guide-kicker{font-size:11px;font-weight:750;color:var(--muted)}.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.feature-card{min-width:0;display:grid;grid-template-columns:45px minmax(0,1fr) 18px;align-items:start;gap:11px;border-radius:10px;border:1px solid #d6e5d9;background:#f8fbf8;padding:16px 14px;text-decoration:none;transition:transform .15s,border-color .15s,box-shadow .15s}.feature-card:hover{transform:translateY(-2px);border-color:#84b7a0;box-shadow:0 7px 19px #1c5c4120}.feature-card:focus-visible{outline-offset:2px}.feature-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:10px;background:#e5f2e9;color:var(--green);font-size:18px;font-weight:800}.feature-card h3{font-size:16px;font-weight:850;line-height:1.48;margin:0 0 4px;letter-spacing:-.025em}.feature-card p{font-size:12px;line-height:1.6;color:var(--muted);margin:0 0 8px}.feature-card .go{font-size:19px;line-height:1.2;color:var(--green);text-align:right}.pill{display:inline-flex;align-items:center;gap:5px;font-size:10px;line-height:1.4;font-weight:800;padding:4px 9px;border-radius:999px;background:#e1f3e9;color:#155940;white-space:nowrap}.pill.dev{background:#eaf0f0;color:#405e5b}.pill.caution{background:var(--orange2);color:#92502e}.quick-note{display:flex;gap:9px;align-items:flex-start;border-radius:9px;background:#fff7ed;color:#744724;border:1px solid #ecd7c6;padding:12px 15px;margin-top:13px;font-size:12px;line-height:1.75}.quick-note strong{color:#744724}
+.section{padding:56px 0}.section-heading{display:flex;gap:12px;align-items:center;margin-bottom:9px}.section-heading .number{color:var(--green);font:600 19px Georgia,serif}.section h2{font-size:clamp(24px,3vw,33px);line-height:1.45;letter-spacing:-.042em;margin:0 0 12px}.section-lead{font-size:14px;color:var(--muted);margin:0 0 26px;max-width:760px}.details-area{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.detail{padding:24px 0;border-bottom:1px solid var(--line);scroll-margin-top:94px;display:grid;grid-template-columns:235px minmax(0,1fr);gap:32px;align-items:start}.detail:last-child{border:0}.detail-head .mini{font-size:11px;letter-spacing:.1em;color:#678379;font-weight:800}.detail h3{font-size:20px;line-height:1.5;letter-spacing:-.035em;margin:5px 0 12px}.detail .explain{font-size:14px;color:#35574b;margin:0 0 8px}.detail .example{font-size:13px;color:var(--muted);margin:0 0 12px}.detail .example b{color:var(--ink)}.detail-link{font-size:12px;color:var(--green);font-weight:800}.details-area .detail .pill{margin-top:2px}
+.try{background:#edf4ee}.try-inner{display:grid;grid-template-columns:1fr 1.15fr;gap:28px;align-items:start}.try-title{font-size:29px;margin:10px 0 11px;line-height:1.4;letter-spacing:-.03em}.try-copy{font-size:14px;color:var(--muted);margin:0 0 14px}.try-list{padding-left:20px;color:#49665b;font-size:13px;line-height:2}.try-warning{font-size:12px;border-left:3px solid var(--orange);padding-left:12px;color:#685748;margin-top:21px}
+.demo-box{background:white;border:1px solid #cbded1;border-radius:14px;padding:22px;box-shadow:0 12px 36px #33584012}.demo-label{display:block;font-size:12px;font-weight:800;margin-bottom:7px}.demo-box textarea{display:block;width:100%;min-height:95px;background:#fbfdfa;color:var(--ink);border-radius:7px;border:1px solid #bbd2c2;padding:11px;resize:vertical;font-size:13px;line-height:1.75;margin:0 0 14px}.demo-box textarea#quotes{min-height:85px}.demo-actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--green);background:var(--green);color:white;border-radius:7px;padding:10px 15px;font-size:13px;font-weight:750}.btn:hover{background:#125742}.btn.alt{background:white;color:var(--green)}.btn.alt:hover{background:#ebf6ed}
+.results{margin-top:16px}.result-summary{font-size:14px;font-weight:780;color:var(--ink);margin:0 0 9px}.result-row{border:1px solid var(--line);background:#fafcfa;border-radius:7px;padding:10px 12px;margin-top:7px;font-size:12px}.result-row.ok{border-left:4px solid #268064}.result-row.no{border-left:4px solid #b55a3a}.result-row strong{display:block;margin-bottom:4px}.result-row span{color:var(--muted)}.digest{font-size:10px;line-height:1.65;color:var(--muted);margin:10px 0 0;overflow-wrap:anywhere}
+.evidence{background:white}.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.fact{padding:20px;border:1px solid var(--line);border-radius:10px;background:#fafcf9}.fact strong{display:block;font:600 32px Georgia,serif;color:var(--green);letter-spacing:-.05em;line-height:1.2}.fact p{font-size:13px;font-weight:800;margin:8px 0 2px}.fact span{display:block;font-size:12px;line-height:1.6;color:var(--muted)}.evidence-note{margin-top:17px;color:var(--muted);font-size:12px}
+.disclosure{margin-top:24px;border:1px solid var(--line);border-radius:10px;background:white}.disclosure summary{padding:15px 17px;font-size:14px;font-weight:800;cursor:pointer}.disclosure summary::marker{color:var(--green)}.disclosure-content{padding:0 20px 18px;color:var(--muted);font-size:13px}.disclosure-content li{margin:5px 0}.disclosure-content p{margin-bottom:9px}
+.bottom{padding:31px 0 44px;border-top:1px solid var(--line);background:#eef4ef}.bottom-inner{display:flex;gap:22px;justify-content:space-between;align-items:center}.bottom h2{font-size:20px;letter-spacing:-.03em;margin:0 0 6px}.bottom p{font-size:12px;color:var(--muted);margin:0}.bottom a{font-size:13px;font-weight:800;text-decoration:none;border:1px solid #9cc5b3;color:var(--green);padding:9px 13px;border-radius:6px;white-space:nowrap}
+.footer{padding:24px 0 35px;color:var(--muted);font-size:11px}.footer-inner{display:flex;gap:18px;justify-content:space-between;flex-wrap:wrap}
+@media(max-width:850px){.hero-stamp{display:none}.try-inner{grid-template-columns:1fr}.detail{grid-template-columns:170px 1fr;gap:22px}.facts{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){html{scroll-padding-top:71px}.container{width:min(100% - 30px,1060px)}.header-inner{min-height:58px;gap:8px}.logo{font-size:18px}.header-links{gap:10px}.header-links a:not(.top-demo){display:none}.hero{padding:31px 0 12px}.hero h1{font-size:clamp(28px,8.5vw,38px);line-height:1.39;margin:10px 0 10px}.hero .lead{font-size:13px;line-height:1.75}.guide{padding:12px 0 38px}.guide-panel{padding:14px;border-radius:12px}.guide-head{align-items:start}.guide-title{font-size:18px}.guide-kicker{font-size:10px}.feature-grid{grid-template-columns:1fr;gap:8px}.feature-card{padding:12px;grid-template-columns:38px minmax(0,1fr) 15px;gap:9px}.feature-icon{width:36px;height:36px;font-size:16px}.feature-card h3{font-size:15px;margin:0 0 2px}.feature-card p{font-size:11px;margin-bottom:6px}.feature-card .go{font-size:17px}.quick-note{font-size:11px}.section{padding:38px 0}.detail{grid-template-columns:1fr;gap:10px;padding:20px 0}.detail h3{margin:2px 0 9px;font-size:18px}.detail .explain{font-size:13px}.detail .example{font-size:12px}.detail-head .pill{margin:0}.demo-box{padding:15px}.facts{grid-template-columns:1fr 1fr;gap:8px}.fact{padding:13px}.fact strong{font-size:27px}.fact p{font-size:12px}.fact span{font-size:11px}.bottom-inner{align-items:flex-start;flex-direction:column}.try-title{font-size:25px}}
+@media(max-width:360px){.facts{grid-template-columns:1fr}.header-links .top-demo{padding:7px 9px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.feature-card{transition:none}}
 </style>
 </head>
 <body>
 <a class="skip" href="#main">本文へ移動</a>
-<header id="top"><div class="wrap">
-<a class="mark" href="#top">POLYMATH<span class="dot">.</span></a>
-<nav aria-label="ページ内メニュー"><a href="#status">研究の現在地</a><a href="#architecture">仕組み</a><a href="#demo">デモ</a><a href="#limits">未検証</a><a href="#history">研究履歴</a></nav>
-</div></header>
+<header class="site-header"><div class="container header-inner"><a class="logo" href="#top" aria-label="POLYMATH トップ">POLYMATH<span class="dot">.</span></a><nav class="header-links" aria-label="主なメニュー"><a href="#catalog">できること</a><a href="#details">詳しく見る</a><a href="#results">研究結果</a><a class="top-demo" href="#demo">無料デモを試す ↗</a></nav></div></header>
 <main id="main">
-<section class="hero"><div class="wrap"><div>
-<div class="mini">POLYMATH / PUBLIC RESEARCH NOTE 001</div>
-<h1>有料AI機能を、<br><em>無料の技術で。</em><br>どこまで作れるか。</h1>
-<p>有料のAI開発者向け機能を、オープンソースと無料で利用できる技術の組合せで再現する研究。<strong>作れた部分だけでなく、まだ証明できていない部分も公開します。</strong></p>
-<div class="hero-meta"><span>ZERO-COST AI LAB</span><span>ZCAI-001 / v0.7</span><span>記録更新：2026.10.19</span></div>
-</div><div class="hero-art" aria-label="ZCAI-001研究の概念図">
-<div class="mini">FIRST PROJECT / WEB RETRIEVAL</div><div class="artifact">001<small> / R&amp;D</small></div>
-<div class="art-caption"><b>RESEARCH STATUS</b>ローカル試作は進展。<br>有料APIとの品質同等性は未検証。</div>
+<div id="top"></div>
+<section class="hero"><div class="container hero-inner"><div class="hero-main">
+<div class="eyebrow">POLYMATH / ZERO-COST AI LAB</div>
+<h1>有料AIの機能を、<br><span class="highlight">無料の技術で</span>作ってみた。</h1>
+<p class="lead">Webページの本文抽出・資料検索・引用チェックなどを、無料の技術でどこまで実現できるか研究中です。<strong>下のカードを押すと、できることと使える状況が分かります。</strong></p>
+</div><aside class="hero-stamp" aria-label="読了目安"><strong>1 min</strong><span>最初の一覧は約1分</span></aside></div></section>
+<section class="guide" id="catalog" aria-labelledby="catalog-title"><div class="container"><div class="guide-panel">
+<div class="guide-head"><h2 class="guide-title" id="catalog-title">まずは、何ができる？</h2><span class="guide-kicker">タップして詳しく見る ↓</span></div>
+<div class="feature-grid">
+<a class="feature-card" href="#extract" aria-label="1 Webページから本文だけ取り出す の説明へ"><span class="feature-icon" aria-hidden="true">01</span><span><h3>Webページから本文を取り出す</h3><p>長いHTMLから、記事の文章を抽出。</p><span class="pill dev">ローカル試作済み</span></span><span class="go" aria-hidden="true">↗</span></a>
+<a class="feature-card" href="#search" aria-label="2 保存した資料を検索する の説明へ"><span class="feature-icon" aria-hidden="true">02</span><span><h3>保存した資料を検索する</h3><p>キーワードから関連する文書を探す。</p><span class="pill dev">ローカル試作済み</span></span><span class="go" aria-hidden="true">↗</span></a>
+<a class="feature-card" href="#demo" aria-label="3 AIの引用をチェックする 無料デモへ"><span class="feature-icon" aria-hidden="true">03</span><span><h3>AIの引用をチェックする</h3><p>引用文が元の文章にあるか照合。</p><span class="pill">この場でデモを使える</span></span><span class="go" aria-hidden="true">↗</span></a>
+<a class="feature-card" href="#markdown" aria-label="4 Web記事をMarkdownに変換する の説明へ"><span class="feature-icon" aria-hidden="true">04</span><span><h3>Web記事をMarkdownに変換する</h3><p>AIに渡しやすい文章形式に整える。</p><span class="pill dev">アダプター試作中</span></span><span class="go" aria-hidden="true">↗</span></a>
+<a class="feature-card" href="#websearch" aria-label="5 無料のWeb検索と連携する の説明へ"><span class="feature-icon" aria-hidden="true">05</span><span><h3>無料のWeb検索とつなぐ</h3><p>検索エンジン連携の仕組みを開発。</p><span class="pill caution">実検索は未検証</span></span><span class="go" aria-hidden="true">↗</span></a>
+</div><div class="quick-note"><span aria-hidden="true">ⓘ</span><span><strong>今このサイトで直接試せるのは「③ 引用チェックの簡易デモ」です。</strong> ほかはローカル試作品か接続検証中で、無料の公開APIとして提供しているわけではありません。</span></div>
 </div></div></section>
-<div class="metrics"><div class="wrap" aria-label="過去の開発記録に基づく結果">
-<div class="metric"><strong>92/92</strong><span>v0.7 開発テスト</span><small>作者側・ローカルでの記録</small></div>
-<div class="metric"><strong>30/30</strong><span>人工検索課題</span><small>合成データのみ</small></div>
-<div class="metric"><strong>15/15</strong><span>HTML反例回帰</span><small>既知の反例セット</small></div>
-<div class="metric"><strong>50/50</strong><span>ローカル技術HTMLの非空抽出</span><small>v0.6・単一文書群</small></div>
-</div></div>
-<section id="status"><div class="wrap"><div class="section-head"><div class="mini">01 / WHERE WE STAND</div>
-<h2>「動いた」と「使える」は、違う。</h2>
-<p>第1弾はAI向けWeb検索・本文抽出・出典照合の基礎機能。有料APIを呼び出さずに動くローカルの実験実装まで進みました。ただし、開発テストの通過を有料サービスの代替品質とは扱いません。</p></div>
-<div class="status-grid">
-<article class="status-card"><div class="icon">↗</div><h3>実装した機能</h3><p>HTML本文抽出、ローカル全文検索、localhost JSON API、保存文書のSHA-256記録、引用文字列・出典ID・差分の照合。SearXNG連携アダプターも開発。</p><div class="foot">IMPLEMENTED / LOCAL PROTOTYPE</div></article>
-<article class="status-card"><div class="icon">≡</div><h3>確認した範囲</h3><p>v0.7の92件の開発テスト、人工検索30課題、既知HTML反例15件が報告上PASS。配布ZIPのファイルハッシュ30件一致と整合性チェックも実施。</p><div class="foot">AUTHOR-REPORTED TEST EVIDENCE</div></article>
-<article class="status-card"><div class="icon">?</div><h3>まだ言えないこと</h3><p>有料検索APIと同等の精度、現実のWeb検索での安定性、引用の意味的正確さ、公開サービスの安全性、第三者による再現性は未立証です。</p><div class="foot">INDEPENDENT REVIEW / PENDING</div></article>
-</div><p class="statement"><strong>重要：</strong>「追加API課金なし」は研究の設計条件であり、電力・端末・サーバー・保守を含む総運用コストが0円という意味ではありません。製品としての正式公開や独立認証は保留中です。</p></div></section>
-<section class="pipeline" id="architecture"><div class="wrap"><div class="section-head"><div class="mini" style="color:#c9daa5">02 / HOW IT WORKS</div><h2>既存の無料技術を、検証できる形でつなぐ。</h2><p>再発明そのものより、入出力の追跡、失敗時の検出、比較可能な評価方法を重視します。</p></div>
-<div class="flow">
-<article><span>01</span><h3>資料を取得・受け取る</h3><p>許可されたHTMLや公開データを入力。出所URLは未検証なら自己申告として扱う。</p></article>
-<article><span>02</span><h3>本文を抽出・登録する</h3><p>ローカル抽出と任意の無料OSSアダプター。本文・資料ID・ハッシュを保存する。</p></article>
-<article><span>03</span><h3>検索と引用を照合する</h3><p>保存資料の検索・引用箇所の文字列一致・欠落やハッシュ不一致を検出。</p></article>
-<article><span>04</span><h3>独立評価で判定する</h3><p>権利確認済みの実データ、盲検ラベル、既存OSSとの同条件比較を予定。現在は未完了。</p></article>
-</div><p class="flow-note">構造一致 ≠ 文意の裏付け ≠ 出典が本物 ≠ 事実の証明。これらは別々の検証ゲートです。</p></div></section>
-<section class="demo" id="demo"><div class="wrap"><div class="section-head"><div class="mini">03 / TRY THE IDEA</div><h2>引用は、本当に本文の中にある？</h2><p>v0.7が扱う基本概念を、ブラウザーだけで再現したミニデモです。文字列一致だけを検査し、AIによる真偽判定はしません。送信・保存・外部通信はありません。</p></div>
-<div class="demo-shell">
-<div class="demo-intro"><h3>LOCAL CITATION CHECK</h3><p>左のデモはバックエンドの本体APIではありません。検証対象の本文と引用を貼り付け、文字列が含まれるかを調べます。</p>
-<ol><li>本文の中に引用が存在すれば「一致」</li><li>存在しなければ「未一致」</li><li>一致しても内容の真実性は判定しません</li></ol>
-<p>研究ではさらに、保存資料のハッシュ照合、数値相違の疑い、未登録資料なども検査します。</p></div>
-<div class="demo-fields">
-<label for="source">検査する本文</label>
-<textarea id="source" spellcheck="false">2026年10月17日、ZCAI-001 v0.7の開発テストは92件成功しました。人工データの検索30課題でも動作を確認しました。有料APIと同等の性能はまだ検証していません。</textarea>
-<label for="quotes">照合する引用（1行につき1件）</label>
-<textarea id="quotes" spellcheck="false">開発テストは92件成功しました
+<div class="details-area"><section class="section" id="details"><div class="container">
+<div class="section-heading"><span class="number">01</span><span class="eyebrow">WHAT WE BUILT</span></div>
+<h2>それぞれ、何ができるの？</h2>
+<p class="section-lead">難しい技術説明ではなく、具体的な使い道から紹介します。必要な項目だけ読めます。</p>
+<article class="detail" id="extract"><div class="detail-head"><div class="mini">FEATURE 01</div><h3>Webページの本文抽出</h3><span class="pill dev">ローカル試作済み</span></div><div><p class="explain">WebサイトのHTMLから、記事の本文などを取り出して保存できます。</p><p class="example"><b>例えば：</b>長い技術記事を、AIが読みやすいテキストにする用途。ローカル技術HTML50件で、非空の文章抽出を確認しました。</p><span class="detail-link">実Webでの品質評価はこれから</span></div></article>
+<article class="detail" id="search"><div class="detail-head"><div class="mini">FEATURE 02</div><h3>ローカル資料検索</h3><span class="pill dev">ローカル試作済み</span></div><div><p class="explain">取り込んだ資料から、入力したキーワードに関連する文書を検索できます。</p><p class="example"><b>例えば：</b>自分で保存した50件の資料から、指定の話題に合うものを探す。人工データ30検索課題では30/30を確認しました。</p><span class="detail-link">現実の検索精度は未検証</span></div></article>
+<article class="detail" id="markdown"><div class="detail-head"><div class="mini">FEATURE 04</div><h3>Markdown形式への変換</h3><span class="pill dev">アダプター試作中</span></div><div><p class="explain">取り込み済みHTMLを、見出しのあるMarkdownやプレーンテキストへ変換するための経路を用意しました。</p><p class="example"><b>例えば：</b>Web記事をAIに渡しやすい形式に整理する用途。標準ライブラリ経路の動作と模擬アダプター試験を確認しました。</p><span class="detail-link">実Trafilaturaでの比較試験は未実施</span></div></article>
+<article class="detail" id="websearch"><div class="detail-head"><div class="mini">FEATURE 05</div><h3>無料検索エンジンとの連携</h3><span class="pill caution">実検索は未検証</span></div><div><p class="explain">SearXNGなどの無料・自己ホスト型検索ソフトにつなぐためのアダプターを試作しました。</p><p class="example"><b>例えば：</b>外部の検索APIに課金せず、自分の環境でWeb検索を組み込むことを目指しています。</p><span class="detail-link">実接続・検索品質・運用費の実証はこれから</span></div></article>
+</div></section></div>
+<section class="section try" id="demo" aria-labelledby="demo-title"><div class="container try-inner">
+<div><div class="eyebrow">02 / TRY IT YOURSELF</div><h2 class="try-title" id="demo-title">無料デモ：その引用、<br>元の文章に本当にある？</h2>
+<p class="try-copy">AIの回答に書かれた「引用」が、手元の資料に本当に存在するかを調べる体験版です。自分の文章に書き換えても試せます。</p>
+<ol class="try-list"><li>原文を貼る</li><li>確認したい引用を1行ずつ書く</li><li>「照合する」を押す</li></ol>
+<p class="try-warning"><strong>重要：</strong>チェックできるのは文字列の一致だけです。引用が事実か、文脈に合うかは判定できません。このブラウザーデモの入力は外部送信されません。</p>
+</div>
+<div class="demo-box">
+<label class="demo-label" for="source">① 元の文章</label><textarea id="source" spellcheck="false">ZCAI-001 v0.7の開発テストは92件成功しました。人工検索30課題の動作も確認しました。ただし、有料APIと同等の性能はまだ検証していません。</textarea>
+<label class="demo-label" for="quotes">② 確認したい引用（1行に1件）</label><textarea id="quotes" spellcheck="false">開発テストは92件成功しました
 有料APIと同等の性能を実証しました</textarea>
-<div class="buttons"><button id="run" class="button" type="button">照合する →</button><button id="reset" class="button secondary" type="button">初期値に戻す</button></div>
-<div class="results" id="results" aria-live="polite" aria-label="照合結果"></div>
-<div class="hash" id="digest">本文のSHA-256：未計算</div>
-<p class="demo-warning">※この判定は文字列の包含チェックです。意味の正しさ・リンク先の正当性・最新性は確認しません。</p>
-</div></div></div></section>
-<section id="limits"><div class="wrap"><div class="section-head"><div class="mini">04 / INDEPENDENT EVIDENCE GATE</div><h2>未達を、未達のまま示す。</h2><p>次の条件が揃うまでは「有料機能を無料で再現できた」とは結論づけません。</p></div>
-<div class="gates">
-<article class="gate"><div class="tag">NOT YET VERIFIED</div><h3>権利確認済みの実Web評価</h3><p>少なくとも50件の実HTMLページと30件の検索課題で、出典一致、関連性、本文の欠落を盲検評価する。</p></article>
-<article class="gate"><div class="tag">NOT YET VERIFIED</div><h3>既存OSSとの同条件比較</h3><p>SearXNG、Trafilatura、必要ならCrawl4AIと比較。精度・遅延・リソース・保守負荷を揃えて計測する。</p></article>
-<article class="gate"><div class="tag">NOT YET VERIFIED</div><h3>引用の意味的な正確さ</h3><p>「引用が存在する」だけでは根拠にならない。独立に作成した正解ラベルで誤検出・見逃し率を測定する。</p></article>
-<article class="gate"><div class="tag">NOT YET VERIFIED</div><h3>独立監査・安全性・需要</h3><p>LAB2の批判的評価、実環境のセキュリティ検査、利用者の具体的な需要を確認してから採否を判断する。</p></article>
-</div><p class="statement"><strong>指標の注意：</strong>過去の見出し保持率や文字列存在率はHTML構造の診断値です。記事本文の品質、関連検索精度、有料製品との同等性を示すものではありません。</p></div></section>
-<section class="timeline" id="history"><div class="wrap"><div class="section-head"><div class="mini">05 / CHANGELOG</div><h2>成功だけでなく、修正も残す。</h2><p>過去の研究記録を公開向けに要約。数字は再試験の保証ではなく、各時点の記録です。</p></div>
-<div class="timeline-list">
-<div class="timeline-item"><time datetime="2026-10-17">v0.3</time><div><h3>既知の反例8件を修正</h3><p>元の実装にあった本文欠損・順序逆転・再登録時の古い本文残存を修復。15/15反例を確認。</p></div></div>
-<div class="timeline-item"><time datetime="2026-10-17">v0.5</time><div><h3>固定ラベル式のオフライン評価器</h3><p>Precision@k、Recall@k、nDCG@kを計算する道具を追加。数字が出ること自体は実検索の精度証拠ではありません。</p></div></div>
-<div class="timeline-item"><time datetime="2026-10-17">v0.6</time><div><h3>HTML主見出しの抽出方法を改善</h3><p>ローカル技術HTML 50/50で非空抽出。見出しの改善は確認したものの、独立の本文品質評価ではありません。</p></div></div>
-<div class="timeline-item"><time datetime="2026-10-17">v0.7</time><div><h3>引用・出典の整合性チェッカー</h3><p>引用欠落、保存資料のハッシュ相違、原文不一致、未登録資料、数値相違の疑いを扱う。開発テスト92/92。意味的妥当性はNOT_TESTED。</p></div></div>
-<div class="timeline-item"><time datetime="2026-10-17">OSS Adapter</time><div><h3>無料Markdown変換経路を試作</h3><p>std-lib抽出と任意のTrafilaturaアダプターを隔離実装。模擬実装を含む22/22の開発テストはPASS、実Trafilatura品質試験は未実施。</p></div></div>
+<div class="demo-actions"><button class="btn" type="button" id="run">③ 照合する →</button><button class="btn alt" type="button" id="reset">例文に戻す</button></div>
+<div class="results" id="check-results" aria-live="polite" aria-atomic="true"></div>
+<p class="digest" id="digest">本文のSHA-256：未計算</p>
 </div></div></section>
+<section class="section evidence" id="results"><div class="container">
+<div class="section-heading"><span class="number">03</span><span class="eyebrow">RESEARCH RESULTS</span></div><h2>どこまで検証できた？</h2>
+<p class="section-lead">2026年10月17日までの開発記録です。すべて開発者側のテストで、独立した性能認証ではありません。</p>
+<div class="facts"><div class="fact"><strong>92/92</strong><p>開発テスト</p><span>v0.7：単体・統合検査</span></div><div class="fact"><strong>30/30</strong><p>検索の基本動作</p><span>人工的に作成した課題</span></div><div class="fact"><strong>15/15</strong><p>過去のHTML反例</p><span>既知の失敗を再検査</span></div><div class="fact"><strong>50/50</strong><p>HTMLから非空抽出</p><span>v0.6：特定の技術文書群</span></div><div class="fact"><strong>22/22</strong><p>変換経路の開発テスト</p><span>模擬アダプターを含む</span></div><div class="fact"><strong>未検証</strong><p>有料APIとの同等性</p><span>実Web・独立評価は未実施</span></div></div>
+<p class="evidence-note">※数字は各版の研究記録で報告された結果です。外部サービスとの品質比較、実運用の安定性、無料の総運用コストを示すものではありません。</p>
+<details class="disclosure"><summary>なぜ、まだ「完成」と言えないの？</summary><div class="disclosure-content"><p>本格的な利用には次の確認が必要です。</p><ul><li>権利確認済みの実HTML50ページと30検索タスクでの盲検評価</li><li>SearXNG・Trafilatura等との条件をそろえた比較</li><li>引用が文章の主張を本当に支えているかという意味の検査</li><li>独立したLAB2審査、プライバシー・セキュリティ、維持費の評価</li></ul><p>「開発テストPASS」と「有料APIと同じ品質」は別です。引用の意味的妥当性はNOT_TESTEDです。</p></div></details>
+<details class="disclosure"><summary>これまでの改良履歴を見る</summary><div class="disclosure-content"><ul><li><b>v0.3：</b>本文欠損・順序逆転・再登録時の古い本文残存など、既知8件の失敗を修正。</li><li><b>v0.5：</b>検索のPrecision@k、Recall@k、nDCG@kを算出するオフライン評価器を追加。</li><li><b>v0.6：</b>技術HTMLの見出し・本文抽出を改善。構造診断であり品質の独立認証ではありません。</li><li><b>v0.7：</b>原文・引用・ハッシュの整合性チェックを追加。</li><li><b>OSSアダプター：</b>任意のMarkdown変換の経路を試作。実Trafilatura品質は未測定。</li></ul></div></details>
+<details class="disclosure"><summary>「無料」の範囲について</summary><div class="disclosure-content"><p>無料・オープンソースの技術を使い、追加の有料APIを呼ばない構成を目指しています。一方、PC・電力・サーバー・通信・保守などの費用が必ず0円になるわけではありません。現時点で誰でも利用できる本番用Web検索APIは公開していません。</p></div></details>
+</div></section>
+<section class="bottom"><div class="container bottom-inner"><div><h2>まずは「引用チェック」を試してみよう。</h2><p>見て終わりではなく、文章を入れてすぐ操作できます。</p></div><a href="#demo">無料の簡易デモへ ↑</a></div></section>
 </main>
-<footer><div class="wrap"><div><strong>POLYMATH / ZERO-COST AI LAB</strong><p>公開研究ノート｜2026-10-19。実装実験の紹介であり、提供中の無料検索APIではありません。</p></div><div><a href="#top">ページ先頭へ ↑</a><p>Evidence before claims.</p></div></div></footer>
+<footer class="footer"><div class="container footer-inner"><span>POLYMATH / ZERO-COST AI LAB — 2026.10.19</span><span>科学的な独立認証・有料製品同等性は未達</span></div></footer>
 <script>
 (()=>{"use strict";
-const source=document.getElementById("source"), quotes=document.getElementById("quotes"), results=document.getElementById("results"), digest=document.getElementById("digest");
-const originalSource=source.value, originalQuotes=quotes.value;
-const hex=async text=>{if(!window.crypto||!crypto.subtle)return "この環境では取得できません";const bytes=new TextEncoder().encode(text), h=await crypto.subtle.digest("SHA-256",bytes);return Array.from(new Uint8Array(h),x=>x.toString(16).padStart(2,"0")).join("")};
-async function run(){const s=source.value, q=quotes.value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);results.replaceChildren();const sum=document.createElement("p");sum.textContent=q.length?q.filter(x=>s.includes(x)).length+" / "+q.length+" 件が本文内に存在します":"1行以上の引用を入力してください";results.appendChild(sum);q.forEach((text,i)=>{const hit=s.includes(text),row=document.createElement("div"),title=document.createElement("strong"),body=document.createElement("span");row.className="result "+(hit?"ok":"no");title.textContent=(i+1)+". "+(hit?"一致（文字列のみ）":"未一致");body.textContent=text;row.append(title,body);results.appendChild(row)});digest.textContent="本文のSHA-256："+await hex(s)}
-document.getElementById("run").addEventListener("click",run);document.getElementById("reset").addEventListener("click",()=>{source.value=originalSource;quotes.value=originalQuotes;run()});run();
+const source=document.getElementById("source"),quotes=document.getElementById("quotes"),results=document.getElementById("check-results"),digest=document.getElementById("digest");
+const initialSource=source.value,initialQuotes=quotes.value;
+async function sha(text){if(!window.crypto||!crypto.subtle)return "この環境では計算できません";const hash=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(text));return Array.from(new Uint8Array(hash),v=>v.toString(16).padStart(2,"0")).join("")}
+async function run(){const s=source.value,items=quotes.value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);results.replaceChildren();const total=items.filter(x=>s.includes(x)).length;const summary=document.createElement("p");summary.className="result-summary";summary.textContent=items.length?"結果：" + total+" / "+items.length+" 件が本文と一致":"引用を1行以上入力してください";results.appendChild(summary);items.forEach((q,i)=>{const hit=s.includes(q),row=document.createElement("div"),head=document.createElement("strong"),text=document.createElement("span");row.className="result-row "+(hit?"ok":"no");head.textContent=(i+1)+". "+(hit?"一致しました（文字列のみ）":"一致しませんでした");text.textContent=q;row.append(head,text);results.appendChild(row)});digest.textContent="本文のSHA-256："+await sha(s)}
+document.getElementById("run").addEventListener("click",run);
+document.getElementById("reset").addEventListener("click",()=>{source.value=initialSource;quotes.value=initialQuotes;run()});
+run();
 })();
 </script>
 </body>
