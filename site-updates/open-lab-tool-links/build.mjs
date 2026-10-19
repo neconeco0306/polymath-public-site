@@ -1,58 +1,59 @@
-/** Add three production-ready tool links near the site's opening index.
- * Uses the existing live site as the *build-time only* source to avoid
- * overwriting its research archive. Fails closed on source or layout drift.
+/**
+ * POLYMATH Open Lab: non-destructive homepage + separate 100-project index.
+ * For this 2026-10-19 one-shot release, fetch the pinned *pre-navigation*
+ * production alias after verified rollback. Deployment must fail on drift.
+ * The result embeds full original page, not a reconstructed snippet.
+ * Once a source-controlled canonical homepage exists, migrate to it.
  */
-import {mkdir,writeFile} from 'node:fs/promises';
-const source='https://polymath-open-lab.vercel.app/';
+import { readFile, mkdir, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+const BASE = 'https://polymath-open-lab.vercel.app/';
+const anchor='<!-- POLYMATH_PRODUCT_DIRECTORY_v2_START -->';
 const links=[
-  ['MORPH','画像・PDF・ファイルをまとめて加工','https://nilo-morph-lab.onrender.com/'],
-  ['PLOTCRAFT','グラフ・データ可視化を自由に制作','https://nilo-plotcraft-lab.onrender.com/'],
-  ['LINKLOOM','プロフィールサイトを編集して書き出す','https://nilo-linkloom-lab.onrender.com/'],
+ ['MORPH','画像・ファイル加工','https://nilo-morph-lab.onrender.com/'],
+ ['PLOTCRAFT','グラフ・可視化','https://nilo-plotcraft-lab.onrender.com/'],
+ ['LINKLOOM','プロフィールサイト制作','https://nilo-linkloom-lab.onrender.com/']
 ];
-const style=`<style id="creator-suite-nav-style">
-#creator-suite-links{width:min(1060px,calc(100% - 38px));margin:26px auto 34px;padding:24px 26px;border:1px solid #dce6df;border-radius:15px;background:#fffefb;color:#19352f;box-shadow:0 7px 24px #18372c0a}
-#creator-suite-links .cst-eyebrow{color:#346958;font-size:11px;font-weight:800;letter-spacing:.14em}
-#creator-suite-links h2{font-size:clamp(19px,3vw,25px);letter-spacing:-.03em;line-height:1.4;margin:7px 0 6px}
-#creator-suite-links p{margin:0 0 19px;color:#536961;font-size:13px;line-height:1.75}
-#creator-suite-links .cst-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-#creator-suite-links .cst-card{display:flex;flex-direction:column;gap:7px;min-width:0;padding:17px 17px 15px;background:#f7faf7;border:1px solid #e1e9e2;border-radius:11px;color:#1b3930;text-decoration:none!important;transition:background .15s,border-color .15s}
-#creator-suite-links .cst-card:hover{background:#e9f3eb;border-color:#9bbda8}
-#creator-suite-links .cst-card:focus-visible{outline:3px solid #a14b2c;outline-offset:3px}
-#creator-suite-links .cst-card strong{font-size:17px;letter-spacing:.025em}
-#creator-suite-links .cst-card small{font-size:12px;line-height:1.65;color:#49675c}
-#creator-suite-links .cst-card span{margin-top:auto;padding-top:3px;font-size:12px;font-weight:800;color:#23684d}
-@media(max-width:680px){#creator-suite-links{padding:19px 17px;margin:16px auto 24px}#creator-suite-links .cst-grid{grid-template-columns:1fr}#creator-suite-links .cst-card{padding:13px 15px;gap:4px}}
-@media(prefers-reduced-motion:reduce){#creator-suite-links .cst-card{transition:none}}
+const css=`<style id="polymath-products-style">
+#polymath-product-entry{box-sizing:border-box;width:min(1060px,calc(100% - 36px));margin:28px auto 34px;border:1px solid #cbdccd;background:#fffdf8;color:#1a3b30;border-radius:12px;box-shadow:0 8px 26px #19362f09;padding:21px 25px;font:inherit}
+#polymath-product-entry *{box-sizing:border-box}#polymath-product-entry .polybar{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap}
+#polymath-product-entry .polykicker{font:800 11px/1.6 ui-monospace,monospace;letter-spacing:.08em;color:#3b735e}#polymath-product-entry h2{font-size:clamp(19px,2.4vw,25px);letter-spacing:-.035em;margin:5px 0 8px;line-height:1.5;color:#1a3b30}
+#polymath-product-entry p{font-size:13px;line-height:1.75;color:#506c61;margin:0 0 15px}
+#polymath-product-entry .polylist{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#polymath-product-entry a.polytool{display:block;background:#f5f8f3;border:1px solid #dce8de;border-radius:8px;text-decoration:none;color:#1a4435;padding:12px 13px;line-height:1.5;min-width:0}
+#polymath-product-entry a.polytool strong{display:block;font-size:14px;color:#1b533f}#polymath-product-entry a.polytool small{display:block;font-size:11px;color:#536f5d;margin-top:4px}
+#polymath-product-entry a.polytool:hover{border-color:#82b49d;background:#eaf2e9}#polymath-product-entry a:focus-visible{outline:3px solid #bb5b2e;outline-offset:3px}
+#polymath-product-entry .polydirectory{display:inline-block;font-size:12px;font-weight:800;color:#175b44;text-underline-offset:3px;white-space:normal}
+@media(max-width:630px){#polymath-product-entry{padding:17px 16px;margin:19px auto 25px}#polymath-product-entry .polylist{grid-template-columns:1fr}}
 </style>`;
-const section=`<section id="creator-suite-links" aria-labelledby="creator-suite-title">
-<div class="cst-eyebrow">NEW / FREE CREATOR TOOLS</div>
-<h2 id="creator-suite-title">公開ツールを使ってみる</h2>
-<p>研究とは別に、ブラウザで使える無料の制作ツールも公開しています。各サイトへ直接移動できます。</p>
-<div class="cst-grid">${links.map(([title,description,url])=>`<a class="cst-card" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="${title}：${description}（新しいタブで開く）"><strong>${title}</strong><small>${description}</small><span>サイトを開く ↗</span></a>`).join('')}</div>
-</section>`;
-const res=await fetch(source,{redirect:'follow',signal:AbortSignal.timeout(20000)});
-if(!res.ok)throw Error('Source website unavailable '+res.status);
-const orig=await res.text();
-if(orig.length<10000||!orig.includes('POLYMATH')||!orig.includes('</html>'))throw Error('Unexpected source content, aborting');
-if(orig.includes('creator-suite-links'))throw Error('New navigation already present in original, abort to avoid duplicate');
-const targets=[...orig.matchAll(/<nav\b[^>]*>[\s\S]*?<\/nav>/gi)];
-let point=-1,position='';
-const toc=targets.find(m=>/目次|INDEX|一覧|作品|成果|ツール|CONTENTS/i.test(m[0]));
-if(toc){point=toc.index+toc[0].length;position='toc-nav'}
-else if(targets.length){point=targets[0].index+targets[0][0].length;position='first-nav'}
-else{
- const main=/<main\b[^>]*>/i.exec(orig);
- if(!main)throw Error('Neither navigation nor main found; abort rather than modifying unknown layout');
- point=main.index+main[0].length;position='main-start';
+const section=`${anchor}\n<section id="polymath-product-entry" aria-labelledby="poly-products-title"><div class="polybar"><div class="polykicker">NEW / FREE PRODUCT PROGRAM · 03 LIVE · 100 REFERENCES</div><a class="polydirectory" href="/creator-suite/">100件の開発計画を見る ↗</a></div><h2 id="poly-products-title">無料の制作ツールを公開中</h2><p>研究成果とは別に、3つのブラウザツールを制作しました。100件の候補から3件を公開デモ化し、残り97件は検討・開発待ちです。</p><div class="polylist">${links.map(([label,desc,url])=>`<a class="polytool" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="${label}を新しいタブで開く"><strong>${label} ↗</strong><small>${desc}</small></a>`).join('')}</div></section><!-- POLYMATH_PRODUCT_DIRECTORY_v2_END -->`;
+async function loadBase(){
+ if(process.env.ORIGINAL_PATH)return readFile(process.env.ORIGINAL_PATH,'utf8');
+ const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),25000);
+ try{const res=await fetch(BASE,{redirect:'follow',signal:ctrl.signal});if(!res.ok)throw Error('HTTP '+res.status);return res.text()}
+ finally{clearTimeout(to)}
 }
-if(point<0||point>orig.length-1000)throw Error('Insertion point failed validation');
-const headClose=orig.indexOf('</head>');if(headClose<0)throw Error('No </head>');
-const withSection=orig.slice(0,point)+'\n'+section+'\n'+orig.slice(point);
-const html=withSection.slice(0,withSection.indexOf('</head>'))+style+'\n'+withSection.slice(withSection.indexOf('</head>'));
-if(!html.includes(section)||!html.includes(style)||links.some(([, ,url])=>html.split(url).length!==2))throw Error('Link insertion integrity mismatch');
-for(const s of [orig,html]){if((s.match(/<main\b/gi)||[]).length<1)throw Error('Lost main landmark')}
-await mkdir('dist',{recursive:true});await writeFile('dist/index.html',html,'utf8');
-const rob=await fetch(new URL('robots.txt',source),{signal:AbortSignal.timeout(10000)});if(rob.ok)await writeFile('dist/robots.txt',await rob.text());
-const proof={source,origBytes:Buffer.byteLength(orig),newBytes:Buffer.byteLength(html),insertion:position,links:links.map(x=>x[2]),unchangedSourcePreserved:true};
-await writeFile('dist/update-audit.json',JSON.stringify(proof,null,2));
-console.log('NAV_ADDED',JSON.stringify(proof));
+const original=await loadBase();
+if(!original.toLowerCase().startsWith('<!doctype html')||!/<html\b/i.test(original)||!/<main\b/i.test(original)||!/<\/main>/i.test(original)||!/<\/body>/i.test(original)||!/<\/html>/i.test(original))throw Error('Original HTML structure mismatch');
+if(!process.env.ORIGINAL_PATH && Buffer.byteLength(original,'utf8')<50000)throw Error('Original unexpectedly short; abort');
+if(!/POLYMATH/i.test(original)||!/研究|制作|成果/.test(original))throw Error('Not the expected research site');
+if(original.includes('creator-suite-links')||original.includes('polymath-product-entry'))throw Error('Origin is already patched. Refuse recursive copy');
+const main=/<main\b[^>]*>/i.exec(original);if(!main)throw Error('main absent');
+const insert=main.index+main[0].length;
+let html=original.slice(0,insert)+'\n'+section+'\n'+original.slice(insert);
+const head=/<\/head\s*>/i.exec(html);if(!head)throw Error('head absent');html=html.slice(0,head.index)+'\n'+css+'\n'+html.slice(head.index);
+if((html.match(/<section id="polymath-product-entry"/g)||[]).length!==1)throw Error('Duplicate entry ID');
+if(links.some(([, ,url])=>(html.split(url).length-1)!==1))throw Error('Missing or duplicated outbound link');
+if((html.match(/<main\b/gi)||[]).length !== (original.match(/<main\b/gi)||[]).length)throw Error('Main count modified');
+const restore=html.replace('\n'+css+'\n','').replace('\n'+section+'\n','');
+if(restore!==original)throw Error('Existing research content changed; abort');
+const catalog=await readFile('catalog.html','utf8');
+if((catalog.match(/data-entry data-stage=/g)||[]).length!==100 || !catalog.includes('公開デモ 3') || !catalog.includes('開発候補 97'))throw Error('Catalog validation failed');
+await mkdir('dist/creator-suite',{recursive:true});
+await writeFile('dist/index.html',html,'utf8');await writeFile('dist/creator-suite/index.html',catalog,'utf8');
+await writeFile('dist/creator-suite/program.json',await readFile('catalog.json'));
+const digest=s=>createHash('sha256').update(s).digest('hex');
+const report={origin:BASE,originalBytes:Buffer.byteLength(original),originalSha256:digest(original),updatedSha256:digest(html),originalStructurePreserved:restore===original,catalogEntries:100,liveDemos:3,backlog:97,links:links.map(x=>x[2]),status:'HTML_AND_CATALOG_INTEGRITY_PASS',externalBrowserTest:'NOT_YET_RUN'};
+await writeFile('dist/creator-suite/build-audit.json',JSON.stringify(report,null,2));
+if(!process.env.ORIGINAL_PATH){try{const rob=await fetch(new URL('robots.txt',BASE),{signal:AbortSignal.timeout(7000)});if(rob.ok)await writeFile('dist/robots.txt',await rob.text())}catch(err){console.log('Robots fetch was skipped',String(err))}}
+console.log('INTEGRITY_PASS '+JSON.stringify(report));
