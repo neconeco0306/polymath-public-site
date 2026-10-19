@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 root=Path(__file__).resolve().parents[1]
 html=(root/'dist/index.html').read_text()
-original=(root/'mock-original.html').read_text()
+original=(root/'tests/mock-original.html').read_text()
 css=(root/'build.mjs').read_text()
 assert html.startswith('<!doctype html>')
 assert 'polymath-product-entry' in html
