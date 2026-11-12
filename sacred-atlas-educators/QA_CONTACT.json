@@ -1,0 +1,122 @@
+{
+  "count": 29,
+  "pass": 29,
+  "checks": [
+    {
+      "test": "exactly two email links",
+      "passed": true
+    },
+    {
+      "test": "email CTA visible",
+      "passed": true
+    },
+    {
+      "test": "no false storefront",
+      "passed": true
+    },
+    {
+      "test": "price and inclusions present",
+      "passed": true
+    },
+    {
+      "test": "no unapproved external scripts",
+      "passed": true
+    },
+    {
+      "test": "mail body has privacy caution",
+      "passed": true
+    },
+    {
+      "test": "public contact consent used",
+      "passed": true
+    },
+    {
+      "test": "no payment link published",
+      "passed": true
+    },
+    {
+      "test": "robots no-index",
+      "passed": true
+    },
+    {
+      "test": "PDF exists",
+      "passed": true
+    },
+    {
+      "test": "index.html at 320px no overflow",
+      "passed": true
+    },
+    {
+      "test": "index.html at 320px no JS error",
+      "passed": true
+    },
+    {
+      "test": "index.html at 390px no overflow",
+      "passed": true
+    },
+    {
+      "test": "index.html at 390px no JS error",
+      "passed": true
+    },
+    {
+      "test": "contact CTA href",
+      "passed": true
+    },
+    {
+      "test": "contact CTA has 44px touch target",
+      "passed": true
+    },
+    {
+      "test": "index.html at 768px no overflow",
+      "passed": true
+    },
+    {
+      "test": "index.html at 768px no JS error",
+      "passed": true
+    },
+    {
+      "test": "index.html at 1440px no overflow",
+      "passed": true
+    },
+    {
+      "test": "index.html at 1440px no JS error",
+      "passed": true
+    },
+    {
+      "test": "lesson.html at 320px no overflow",
+      "passed": true
+    },
+    {
+      "test": "lesson.html at 320px no JS error",
+      "passed": true
+    },
+    {
+      "test": "lesson.html at 390px no overflow",
+      "passed": true
+    },
+    {
+      "test": "lesson.html at 390px no JS error",
+      "passed": true
+    },
+    {
+      "test": "lesson.html at 768px no overflow",
+      "passed": true
+    },
+    {
+      "test": "lesson.html at 768px no JS error",
+      "passed": true
+    },
+    {
+      "test": "lesson.html at 1440px no overflow",
+      "passed": true
+    },
+    {
+      "test": "lesson.html at 1440px no JS error",
+      "passed": true
+    },
+    {
+      "test": "all checks succeeded",
+      "passed": true
+    }
+  ]
+}

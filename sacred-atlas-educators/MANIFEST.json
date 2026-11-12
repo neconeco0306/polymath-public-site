@@ -1,0 +1,19 @@
+{
+  "version": "v0.7.1",
+  "git_branch": "sacred-atlas/educators-v07",
+  "git_subdirectory": "sacred-atlas-educators",
+  "files": {
+    "QA_CONTACT.json": "e3b3e5eda5629ea25e5394b0e17ae6fb4794a15194def650303e2b285c28d2c2",
+    "README.md": "4635caf55a393188ce79385bdc84a092afb97b664ea8fa26d1a65ec3b2b0d497",
+    "icon.svg": "60632c3c308bbe2b923772a69065b213a6da652a4b21714ecf39aa572552bab5",
+    "index.html": "68c3470ce1bd6ddd4195ac274a64e1b95708b328756f5069f37897b12fd20099",
+    "lesson.css": "87e94d2a54dffcda70114c477a43dcc94cf198fca3e3205d71d73bde554a5d6f",
+    "lesson.html": "5059a922aa01e67946faa639d08769c1139283713f6bfab39f633046bce8950f",
+    "lesson.js": "f44437619a46d50f0795dcc656297cfc8c34dda9a76d9522732d867d0472d9a4",
+    "robots.txt": "331ea9090db0c9f6f597bd9840fd5b171830f6e0b3ba1cb24dfa91f0c95aedc1",
+    "sample-lesson.pdf": "822ed304c85a19585fdf20462f8ed0f60c2605a52413e6f1b790f5e07d462566",
+    "styles.css": "9d6e41377e56071c13c403bcd6d712e7f777f1da571a074ec6cd97924bed98e2"
+  },
+  "public_contact_approved": true,
+  "payment_processing": false
+}
